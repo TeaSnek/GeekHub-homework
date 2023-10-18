@@ -2,4 +2,4 @@
 
 
 if __name__ == '__main__':
-    print(hex(int(input())))
+    print(hex(int(input('Input decimal number: '))))

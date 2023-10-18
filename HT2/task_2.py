@@ -4,7 +4,7 @@
 
 
 if __name__ == '__main__':
-    x = set(input().split(','))
-    y = set(input().split(','))
+    x = set(input('Input x: ').split(','))
+    y = set(input('Input y: ').split(','))
     print(x, y)
     print(x.difference(y))

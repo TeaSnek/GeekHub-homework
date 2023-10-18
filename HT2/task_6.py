@@ -7,7 +7,7 @@ TARGET_GROUP = [1, 2, 'u', 'a', 4, True]
 
 
 if __name__ == '__main__':
-    user_input = input()
+    user_input = input('Target value')
     if user_input in ['True', 'False']:
         print(bool(user_input) in TARGET_GROUP)
     elif user_input.isdecimal():

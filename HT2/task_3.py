@@ -3,5 +3,5 @@
 
 
 if __name__ == '__main__':
-    number = int(input())
+    number = int(input('Input a <number>: '))
     print(sum([x + 1 for x in range(number)]))

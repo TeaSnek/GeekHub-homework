@@ -3,7 +3,7 @@
 
 
 if __name__ == '__main__':
-    line = input()
+    line = input('input csv: ')
     lst = list(map(int, line.split(',')))
     tpl = tuple(lst)
     print(lst, tpl, sep='\n')

@@ -4,5 +4,5 @@
 
 
 if __name__ == '__main__':
-    input_counter = int(input())
-    print(*[input() for _ in range(input_counter)], sep='')
+    input_counter = int(input('input target a <number> of lines: '))
+    print(*[input('input smth: ') for _ in range(input_counter)], sep='')
