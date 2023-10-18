@@ -4,4 +4,5 @@
 
 
 if __name__ == '__main__':
-    print(*[input() for _ in range(int(input()))], sep = '')
+    input_counter = int(input())
+    print(*[input() for _ in range(input_counter)], sep='')

@@ -5,4 +5,4 @@ TARGET_LIST = [1, 2, 'u', 'a', 4, 'True']
 
 
 if __name__ == '__main__':
-    print(*TARGET_LIST, sep = '')
+    print(*TARGET_LIST, sep='')

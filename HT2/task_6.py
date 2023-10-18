@@ -8,13 +8,9 @@ TARGET_GROUP = [1, 2, 'u', 'a', 4, True]
 
 if __name__ == '__main__':
     user_input = input()
-    try:
-        match user_input:
-            case 'True':
-                print(True in TARGET_GROUP)
-            case 'False':
-                print(False in TARGET_GROUP)
-            case _:
-                print(int(user_input) in TARGET_GROUP)
-    except ValueError:
+    if user_input in ['True', 'False']:
+        print(bool(user_input) in TARGET_GROUP)
+    elif user_input.isdecimal():
+        print(int(user_input) in TARGET_GROUP)
+    else:
         print(user_input in TARGET_GROUP)
