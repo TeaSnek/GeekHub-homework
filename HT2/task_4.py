@@ -4,4 +4,4 @@
 
 
 if __name__ == '__main__':
-    print(*[input() for _ in range(int(input()))], sep='')
+    print(*[input() for _ in range(int(input()))], sep = '')

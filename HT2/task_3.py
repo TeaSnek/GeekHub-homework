@@ -3,4 +3,4 @@
 
 
 if __name__ == '__main__':
-    print(sum([x+1 for x in range(int(input()))]))
+    print(sum([x + 1 for x in range(int(input()))]))
