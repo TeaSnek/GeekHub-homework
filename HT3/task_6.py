@@ -1,8 +1,9 @@
-import numbers
-
-prompt = """
+"""
 Write a script to get the maximum and minimum value in a dictionary.
 """
+
+import numbers
+
 
 test_dict = {
     'name': 'Alice',
@@ -18,11 +19,13 @@ test_dict = {
     'min': -3368.6565
 }
 
+
 def only_numeric_sort_higher(x):
     if isinstance(x, numbers.Number):
         return x
     else:
         return float('-inf')
+
 
 def only_numeric_sort_lower(x):
     if isinstance(x, numbers.Number):
@@ -31,9 +34,7 @@ def only_numeric_sort_lower(x):
         return float('inf')
 
 
-
 if __name__ == '__main__':
-    print('Task 6:', prompt)
     print('Starting dict: ', test_dict, sep='\n')
     max_result = max(test_dict.values(), key=only_numeric_sort_higher)
     min_result = min(test_dict.values(), key=only_numeric_sort_lower)

@@ -1,4 +1,4 @@
-prompt = """
+"""
 Write a script to remove values duplicates from dictionary. Feel free to
 hardcode your dictionary.
 """
@@ -17,7 +17,6 @@ test_dict = {
 
 
 if __name__ == '__main__':
-    print('TASK 5:', prompt)
     print('Starting dict:', test_dict, sep='\n')
     buffer = {}
     for key, value in test_dict.items():
