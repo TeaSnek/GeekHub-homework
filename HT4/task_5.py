@@ -5,8 +5,14 @@ exceptions, and keep asking for input until a valid integer is entered. Display
 the final valid integer.
 """
 
-from task_1 import number_input
 
+def number_input() -> int:
+    try:
+        value = input('Input int or float: ')
+        return int(value)
+    except ValueError:
+        return number_input()
+        
 
 if __name__ == '__main__':
     print(f'Final number: {number_input()}')

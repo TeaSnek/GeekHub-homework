@@ -13,5 +13,5 @@ if __name__ == '__main__':
     age = int(input('Input your age: '))
     try:
         if not 18 <= age <= 120: raise InvalidAgeError
-    except:
+    except InvalidAgeError:
         print('Invalid age input')

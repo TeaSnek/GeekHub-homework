@@ -14,5 +14,5 @@ if __name__ == '__main__':
     try:
         if int(input('Input integer value: ')) < 0:
             raise NegativeValueError
-    except:
+    except NegativeValueError:
         print('Negative number input')
