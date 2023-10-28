@@ -13,19 +13,41 @@ class UnsupportedTemplateError(BaseException):
     pass
 
 
-def verbal_calculator(task : str) -> int | float:
-    if re.fullmatch(r'(\d.\d|\d)\s*(\+|\*|\*\*|/|-|%|//)\s*(\d.\d|\d)', task):
-        result = eval(task)
-        return result
+def verbal_calculator(expr : str) -> int | float:
+    if re.fullmatch(r'(\d.\d|\d)\s*(\+|\*|\*\*|/|-|%|//)\s*(\d.\d|\d)', expr):
+        x, y = [number for number in              #getting numbers form string
+                re.split(r'\s*[\+|\*|\*\*|//|-|%|/]\s*', expr) if number]
+
+        try:
+            x, y = int(x), int(y)
+        except ValueError:
+            x, y = float(x), float(y)
+
+        match re.findall(r'[\+|\*|\*\*|/|-|%|//]', expr):
+            case ['+']:
+                return x + y
+            case ['-']:
+                return x - y
+            case ['/']:
+                try:
+                    return x / y
+                except ZeroDivisionError:
+                    return float('nan')
+            case ['/', '/']:
+                try:
+                    return x // y
+                except ZeroDivisionError:
+                    return float('nan')
+                except ValueError:
+                    return float('nan')
+            case ['*']:
+                return x * y
+            case ['*', '*']:
+                return x ** y
     raise UnsupportedTemplateError
 
 
 if __name__ == '__main__':
-    print('+ ', verbal_calculator('2+2'))
-    print('- ', verbal_calculator('2-2'))
-    print('* ', verbal_calculator('2*2'))
-    print('** ', verbal_calculator('2**2'))
-    print('/ ', verbal_calculator('2/2'))
-    print('// ', verbal_calculator('2//2'))
-    print('% ', verbal_calculator('2%2'))
-    
+    task = input('Input expression you want to evaluate: ')
+    value = verbal_calculator(task)
+    print(task, value, sep=' | ')

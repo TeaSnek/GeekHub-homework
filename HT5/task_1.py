@@ -13,5 +13,10 @@ def season(month_num : int) -> str:
 
 
 if __name__ == '__main__':
-    for i in range(-1, 14):
-        print(i, season(i))
+    month_num = 0
+    while not 1<=month_num<=12:
+        try:
+            month_num = int(input('Input correct month number: '))
+        except ValueError:
+            month_num = 0
+    print(season(month_num))

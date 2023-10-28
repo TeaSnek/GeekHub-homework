@@ -11,6 +11,20 @@ x == y.      вiдповiдь - "х дорiвнює z"
 """
 
 
+def number_input() -> int | float:
+        try:
+            value = input('Input int or float: ')
+            return int(value)
+        except ValueError:
+            try:
+                return float(value)
+            except ValueError:
+                try:
+                    return number_input()
+                except RecursionError:
+                    return 0
+
+
 def task_3_func(x, y) -> None:
     if x > y:
         print(f'{x} більше {y} на {x - y}')
@@ -21,5 +35,6 @@ def task_3_func(x, y) -> None:
 
 
 if __name__ == '__main__':
-    for x, y in zip(range(0, 3), range(2, -1, -1)):
-        task_3_func(x, y)
+    x = number_input()
+    y = number_input()
+    task_3_func(x, y)
