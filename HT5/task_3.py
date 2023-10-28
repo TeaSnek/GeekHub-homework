@@ -38,3 +38,4 @@ if __name__ == '__main__':
     x = number_input()
     y = number_input()
     task_3_func(x, y)
+    

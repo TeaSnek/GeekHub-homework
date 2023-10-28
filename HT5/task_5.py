@@ -51,3 +51,4 @@ if __name__ == '__main__':
     task = input('Input expression you want to evaluate: ')
     value = verbal_calculator(task)
     print(task, value, sep=' | ')
+    

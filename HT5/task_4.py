@@ -39,3 +39,4 @@ def task_4_func(line : str):
 if __name__ == '__main__':
     line = input('Input a line of any length: ')
     task_4_func(line)
+    
