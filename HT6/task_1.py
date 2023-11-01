@@ -18,7 +18,7 @@ def square(length):
 
 if __name__ == '__main__':
     x = 2
-    y = 15.5 
+    y = 15.5
     z = -25
     print(square(x))
     print(square(y))

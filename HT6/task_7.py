@@ -11,9 +11,9 @@
 
 def counter(*args):
     stringified_list = list(map(str, args))
-    counter_dict = {key : stringified_list.count(key) 
+    counter_dict = {key: stringified_list.count(key)
                     for key in stringified_list}
-    print(*[f'{key} -> {counter_dict[key]}' 
+    print(*[f'{key} -> {counter_dict[key]}'
             for key in counter_dict.keys()], sep=', ')
 
 

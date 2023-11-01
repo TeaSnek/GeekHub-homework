@@ -12,11 +12,11 @@
 def bank(a, years, percents=10):
     if a <= 0 or years <= 0 or percents < 0:
         raise ValueError('Inappropriate parameter value')
-    
+
     balance = a
     for year in range(years):
         balance += balance * (percents / 100)
-    
+
     balance = round(balance, 2)
     print(f"Balance: {balance}")
 

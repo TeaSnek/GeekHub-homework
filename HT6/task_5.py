@@ -9,7 +9,7 @@ def fibonacci(n):
         return []
     elif n == 0:
         return [0]
-    
+
     result = [0, 1]
     while sum(result[-2:]) <= n:
         result.append(sum(result[-2:]))
