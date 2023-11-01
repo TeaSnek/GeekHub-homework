@@ -11,7 +11,7 @@ def fibonacci(n):
         return [0]
     
     result = [0, 1]
-    while sum(result[-2:])<=n:
+    while sum(result[-2:]) <= n:
         result.append(sum(result[-2:]))
     return result
 

@@ -8,14 +8,13 @@
 "1 -> 3, foo -> 2, [1, 2] -> 2, True -> 1"
 """
 
-from collections import Counter
-
 
 def counter(*args):
     stringified_list = list(map(str, args))
     counter_dict = {key : stringified_list.count(key) 
                     for key in stringified_list}
-    print(*[f'{key} -> {counter_dict[key]}' for key in counter_dict.keys()], sep=', ')
+    print(*[f'{key} -> {counter_dict[key]}' 
+            for key in counter_dict.keys()], sep=', ')
 
 
 if __name__ == '__main__':

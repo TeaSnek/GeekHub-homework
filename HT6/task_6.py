@@ -10,8 +10,8 @@ fnc([1, 2, 3, 4, 5], shift=-2) --> [3, 4, 5, 1, 2]
 """
 
 
-def fnc(lst: list, shift=-1):
-    return  lst[-shift%len(lst):] + lst[:-shift%len(lst)]
+def fnc(lst: list, shift: int = -1):
+    return  lst[-shift % len(lst):] + lst[:-shift % len(lst)]
 
 
 if __name__ == '__main__':
