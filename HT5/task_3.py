@@ -1,7 +1,7 @@
 """
-Користувач вводить змiннi "x" та "y" з довiльними цифровими значеннями. 
+Користувач вводить змiннi "x" та "y" з довiльними цифровими значеннями.
 Створiть просту умовну конструкцiю (звiсно вона повинна бути в тiлi ф-цiї),
-пiд час виконання якої буде перевiрятися рiвнiсть змiнних "x" та "y" та у 
+пiд час виконання якої буде перевiрятися рiвнiсть змiнних "x" та "y" та у
 випадку нервіності - виводити ще і різницю.
 
 Повиннi опрацювати такi умови (x, y, z заміність на відповідні числа):
@@ -12,17 +12,17 @@ x == y.      вiдповiдь - "х дорiвнює z"
 
 
 def number_input() -> int | float:
+    try:
+        value = input('Input int or float: ')
+        return int(value)
+    except ValueError:
         try:
-            value = input('Input int or float: ')
-            return int(value)
+            return float(value)
         except ValueError:
             try:
-                return float(value)
-            except ValueError:
-                try:
-                    return number_input()
-                except RecursionError:
-                    return 0
+                return number_input()
+            except RecursionError:
+                return 0
 
 
 def task_3_func(x, y) -> None:
@@ -38,4 +38,3 @@ if __name__ == '__main__':
     x = number_input()
     y = number_input()
     task_3_func(x, y)
-    

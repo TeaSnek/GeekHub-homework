@@ -1,4 +1,5 @@
-# Write a script which accepts decimal number from user and converts it to hexadecimal.
+# Write a script which accepts decimal number from user and converts it to
+# hexadecimal.
 
 
 if __name__ == '__main__':

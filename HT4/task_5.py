@@ -12,7 +12,7 @@ def number_input() -> int:
         return int(value)
     except ValueError:
         return number_input()
-        
+
 
 if __name__ == '__main__':
     print(f'Final number: {number_input()}')

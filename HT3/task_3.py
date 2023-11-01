@@ -15,6 +15,6 @@ if __name__ == '__main__':
     resulting_dict.update(dict_3) 
     print('Resulting dict:', resulting_dict, sep='\n')
 
-# according to 
+# according to
 # https://stackoverflow.com/questions/1781571/how-to-concatenate-two-dictionaries-to-create-a-new-one
 # this is the fastest approach to do so
