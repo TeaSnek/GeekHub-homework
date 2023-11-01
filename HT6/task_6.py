@@ -11,9 +11,11 @@ fnc([1, 2, 3, 4, 5], shift=-2) --> [3, 4, 5, 1, 2]
 
 
 def fnc(lst: list, shift=-1):
-    return  lst[-shift:] + lst[:-shift]
+    return  lst[-shift%len(lst):] + lst[:-shift%len(lst)]
 
 
 if __name__ == '__main__':
     print(fnc([1, 2, 3, 4, 5], shift=1))
     print(fnc([1, 2, 3, 4, 5], shift=-2))
+    print(fnc([1, 2, 3, 4, 5], shift=-13))            #equal to -3
+    print(fnc([1, 2, 3, 4, 5], shift=-3))  

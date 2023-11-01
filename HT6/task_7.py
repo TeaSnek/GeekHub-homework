@@ -11,12 +11,12 @@
 from collections import Counter
 
 
-def counter(lst: list) -> dict:
-    stringified_list = list(map(str, lst))
+def counter(*args):
+    stringified_list = list(map(str, args))
     counter_dict = {key : stringified_list.count(key) 
                     for key in stringified_list}
     print(*[f'{key} -> {counter_dict[key]}' for key in counter_dict.keys()], sep=', ')
 
 
 if __name__ == '__main__':
-    counter([1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2]])
+    counter(1, 1, 'foo', [1, 2], True, 'foo', 1, [1, 2])
