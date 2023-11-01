@@ -14,5 +14,5 @@ if __name__ == '__main__':
     for item in TUPLES_LIST:
         replacement = input('Input replacement: ')
         mutated_list.append(item[:-1] + (replacement,))
-    
+
     print('Result: ', mutated_list)

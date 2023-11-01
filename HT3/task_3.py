@@ -12,7 +12,7 @@ dict_3 = {'AUD': 19.2, 'name': 'Tom'}
 
 if __name__ == '__main__':
     resulting_dict = dict(dict_1, **dict_2)
-    resulting_dict.update(dict_3) 
+    resulting_dict.update(dict_3)
     print('Resulting dict:', resulting_dict, sep='\n')
 
 # according to
