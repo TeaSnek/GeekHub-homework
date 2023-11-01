@@ -8,11 +8,11 @@
 def square(length):
     if length < 0:
         raise ValueError(f'Incorrect square side length {length}')
-    
+
     perimeter = length * 4
     area = length ** 2
     diagonal = length * 2 ** 0.5
-    
+
     return perimeter, area, diagonal
 
 
