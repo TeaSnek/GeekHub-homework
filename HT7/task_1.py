@@ -16,16 +16,16 @@ class LoginException(BaseException):
     pass
 
 
-def login(username, password, silent=False):
-    users = {
-        'Oleksandr': '12345678',
-        'Andrii': '87654321',
-        'GEEKHUB': 'bogobogo',
-        'user123454': 'qwertyuiop',
-        '1234': '1234'
-    }
+def login(login, password, silent=False):
+    users = [
+        {'login': 'Oleksandr', 'password': '12345678'},
+        {'login': 'Andrii', 'password': '87654321'},
+        {'login': 'GEEKHUB', 'password': 'bogobogo'},
+        {'login': 'user123454', 'password': 'qwertyuiop'},
+        {'login': '1234', 'password': '1234'}
+    ]
 
-    if users[username] == password:
+    if {'login': login, 'password': password} in users:
         return True
     elif silent:
         return False

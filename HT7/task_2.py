@@ -23,8 +23,7 @@ def validate(login, password):
     elif len(password) < 8:
         raise ValidationError('Password should be shorter than 8 characters')
 
-    elif not any(number in password for number in
-                 ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']):
+    elif not any(char.isdigit() for char in password):
         raise ValidationError('Password should contain at least 1 number')
 
     elif any(symbol in password for symbol in ['`', '$', '|']):

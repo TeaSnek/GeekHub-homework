@@ -19,22 +19,42 @@
 P.S. Не забудьте використати блок try/except ;)
 """
 
-from task_2 import validate, ValidationError
 
-USERS = {
-      'Oleksandr': '12345678',
-      'Andrii': '87654321',
-      'GEEKHUB': 'bogobogo',
-      'user123454': 'qwertyuiop',
-      '1234': '1234'
-    }
+class ValidationError(ValueError):
+    pass
+
+
+def validate(login: str, password: str):
+    if 3 >= len(login):
+        raise ValidationError('Login must be longer than 3 characters')
+
+    elif len(login) >= 50:
+        raise ValidationError('Login must be shorter than 50 characters')
+
+    elif len(password) < 8:
+        raise ValidationError('Password should be shorter than 8 characters')
+
+    elif not any(char.isdigit() for char in password):
+        raise ValidationError('Password should contain at least 1 number')
+
+    elif any(symbol in password for symbol in ['`', '$', '|']):
+        raise ValidationError('Password cannot contain special characters')
+
+
+USERS = [
+        {'login': 'Oleksandr', 'password': '12345678'},
+        {'login': 'Andrii', 'password': '87654321'},
+        {'login': 'GEEKHUB', 'password': 'bogobogo'},
+        {'login': 'user123454', 'password': 'qwertyuiop'},
+        {'login': '1234', 'password': '1234'}
+    ]
 
 
 if __name__ == '__main__':
-    for item in USERS.items():
-        print(f'Name: {item[0]}\nPassword: {item[1]}')
+    for item in USERS:
+        print(f'Name: {item['login']}\nPassword: {item['password']}')
         try:
-            validate(*item)
+            validate(**item)
             print('Status: OK')
         except ValidationError as e:
             print(f'Status: {e}')
