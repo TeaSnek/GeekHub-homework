@@ -12,7 +12,7 @@ def word_len_splitter(line: str):
 
 
 def shortest(line: str):
-    return sorted(word_len_splitter(line))[0]
+    return min(word_len_splitter(line))
 
 
 print(shortest('my shortest words'))
