@@ -33,12 +33,12 @@ def switch(lights_dict, i=0):
         i += 1
 
 
-def crossroad(iter=30):
+def crossroad(iterations=30):
     colors = {0: 'Green', 1: 'Yellow', 2: 'Red', 3: 'Yellow'}
     traffic_lights = switch(colors)
     current_auto = next(traffic_lights)
     curr_timeout, next_timeout = 6, 2
-    for i in range(iter):
+    for i in range(iterations):
         print(f'{current_auto}|{'Green' if current_auto == 'Red' else 'Red'}')
         if i % curr_timeout == 0:
             current_auto = next(traffic_lights)

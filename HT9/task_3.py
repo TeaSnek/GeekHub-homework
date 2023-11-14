@@ -108,7 +108,7 @@ def withdraw(user, amount):
             'balance': balance - amount if balance >= amount else balance,
         }
         print(json.dumps(transaction), file=transactions)
-        print('Current transaction:', *transaction.items(), sep='\n')
+        print(transaction['status'], sep='\n')
 
 
 def deposit(user, amount):
@@ -134,7 +134,7 @@ def deposit(user, amount):
             'balance': balance + amount,
         }
         print(json.dumps(transaction), file=transactions)
-        print('Current transaction:', *transaction.items(), sep='\n')
+        print(transaction['status'], sep='\n')
 
 
 def current_user(username):
@@ -148,11 +148,13 @@ def start():
     next_step = input('login or signup or exit: ')
     logged_in = False
 
-    while next_step != 'exit':
+    while next_step != 'exit' or next_step != '3':
         if not logged_in:
             options = {
                 'signup': create_user,
                 'login': login,
+                '1': create_user,
+                '2': login,
             }
             try:
                 if next_step not in options.keys():
@@ -181,6 +183,8 @@ def start():
                 options = {
                     'withdraw': withdraw,
                     'deposit': deposit,
+                    '1': withdraw,
+                    '2': deposit,
                 }
                 next_step = input('withdraw or deposit or exit: ')
 
@@ -194,11 +198,9 @@ def start():
 
             except KeyError:
                 print('Incorrect action')
-                next_step = input('withdraw or deposit or exit: ')
 
             except ValueError:
                 print('Incorrect amount inserted')
-                next_step = input('withdraw or deposit or exit: ')
 
 
 if __name__ == '__main__':  # start this from "GeekHub homework" directory

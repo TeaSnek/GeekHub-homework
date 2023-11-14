@@ -11,23 +11,23 @@
 import os
 
 
-def extractor(filename, symbols_amount):
+def extractor(filename, length):
     full_path = os.path.join(os.getcwd(), filename)
     print(full_path)
     try:
         with open(full_path, 'r', encoding='utf-8') as file:
             content = file.read()
-            if not content or block_size > len(content):
+            if not content or length > len(content):
                 print('File is too short')
                 return
 
-            middle_index = len(content) // 2
+            mid = len(content) // 2
 
-            print(f"Beginning: {content[:block_size]}")
-            print(f"Middle: {content[
-                # i decided just to print second symbol from two
-                middle_index-block_size//2: middle_index + block_size//2+1]}")
-            print(f"End: {content[-block_size:]}")
+            print(f'Beginning: {content[:length]}')
+            # i decided just to print second symbol from two
+            print(f'Middle: {content[
+                mid-length//2: mid+length//2 + length % 2]}')
+            print(f'End: {content[-length:]}')
 
     except FileNotFoundError:
         print(f"{file_path}' not exist")
@@ -35,5 +35,5 @@ def extractor(filename, symbols_amount):
 
 if __name__ == '__main__':
     file_path = 'HT9/text.txt'
-    block_size = 1
+    block_size = 2
     extractor(file_path, block_size)

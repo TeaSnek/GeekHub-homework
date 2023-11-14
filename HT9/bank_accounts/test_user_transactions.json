@@ -5,3 +5,6 @@
 {"type": "withdraw", "status": "Denied", "amount": 1234.0, "time": "2023-11-14 06:11:32.612198", "balance": 0.0}
 {"type": "deposit", "status": "Success", "amount": 222.0, "time": "2023-11-14 06:12:11.664775", "balance": 222.0}
 {"type": "deposit", "status": "Success", "amount": 222.0, "time": "2023-11-14 06:19:52.907008", "balance": 444.0}
+{"type": "withdraw", "status": "Success", "amount": 100.0, "time": "2023-11-14 15:35:04.658618", "balance": 344.0}
+{"type": "withdraw", "status": "Success", "amount": 100.0, "time": "2023-11-14 15:35:20.575308", "balance": 244.0}
+{"type": "deposit", "status": "Success", "amount": 100.0, "time": "2023-11-14 15:35:36.058294", "balance": 344.0}
