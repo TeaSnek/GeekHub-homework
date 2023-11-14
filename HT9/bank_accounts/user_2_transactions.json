@@ -1,0 +1,3 @@
+{"type": "create", "time": "2023-11-14 06:21:28.388931", "balance": 0.0}
+{"type": "deposit", "status": "Success", "amount": 100000.23, "time": "2023-11-14 06:21:42.041205", "balance": 100000.23}
+{"type": "withdraw", "status": "Success", "amount": 1234.5, "time": "2023-11-14 06:23:01.962928", "balance": 98765.73}

@@ -1,0 +1,7 @@
+{"type": "create", "time": "2023-11-14 05:54:35.551633", "balance": 0.0}
+{"type": "withdraw", "status": "Denied", "amount": 1234.0, "time": "2023-11-14 05:56:46.912759", "balance": 0.0}
+{"type": "withdraw", "status": "Denied", "amount": 1234.0, "time": "2023-11-14 06:07:56.211395", "balance": 0.0}
+{"type": "withdraw", "status": "Denied", "amount": 1234.0, "time": "2023-11-14 06:10:46.772891", "balance": 0.0}
+{"type": "withdraw", "status": "Denied", "amount": 1234.0, "time": "2023-11-14 06:11:32.612198", "balance": 0.0}
+{"type": "deposit", "status": "Success", "amount": 222.0, "time": "2023-11-14 06:12:11.664775", "balance": 222.0}
+{"type": "deposit", "status": "Success", "amount": 222.0, "time": "2023-11-14 06:19:52.907008", "balance": 444.0}
