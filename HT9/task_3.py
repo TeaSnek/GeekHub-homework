@@ -188,7 +188,7 @@ def start():
                 }
                 next_step = input('withdraw or deposit or exit: ')
 
-                if next_step == 'exit':
+                if next_step == 'exit' or next_step == '3':
                     return
                 elif next_step not in options.keys():
                     raise KeyError
