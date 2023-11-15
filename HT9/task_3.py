@@ -87,8 +87,9 @@ def login(username, password):
 
 
 def withdraw(user, amount):
-    if amount <= 0:
-        raise ValueError('Amount cannot be 0 or less')
+    amount = float(amount)
+    if amount <= 0 or not amount == amount:
+        raise ValueError('Amount cannot be 0 or less or nan')
     balance = .0
     with open(f'HT9/bank_accounts/{user}_balance.txt', 'r')\
             as b_file:
@@ -112,8 +113,9 @@ def withdraw(user, amount):
 
 
 def deposit(user, amount):
-    if amount <= 0:
-        raise ValueError('Amount cannot be 0 or less')
+    amount = float(amount)
+    if amount <= 0 or not amount == amount:
+        raise ValueError('Amount cannot be 0 or less or nan')
     balance = .0
 
     with open(f'HT9/bank_accounts/{user}_balance.txt', 'r')\
@@ -145,62 +147,57 @@ def current_user(username):
 
 
 def start():
-    next_step = input('login or signup or exit: ')
     logged_in = False
+    next_step = ''
+    username = ''
+    menu = {
+        False: {
+            'signup': create_user,
+            'login': login,
+        },
+        True: {
+
+            'withdraw': withdraw,
+            'deposit': deposit,
+        }
+    }
 
     while next_step != 'exit' or next_step != '3':
-        if not logged_in:
-            options = {
-                'signup': create_user,
-                'login': login,
-                '1': create_user,
-                '2': login,
-            }
-            try:
-                if next_step not in options.keys():
-                    raise KeyError
+        try:
+            if logged_in:
+                current_user(username)
+            print('Enter name or a number of action:')
+            translate_table = {}
+            for i, option in zip(
+                    range(len(menu[logged_in])),
+                    menu[logged_in].keys()):
+                print(f'{i+1}. {option}')
+                translate_table[ord(f'{i+1}')] = option
+            print('3. exit')
+            next_step = input('Input: ').translate(translate_table)
+            if next_step not in menu[logged_in].keys()\
+                    and next_step not in ['exit', '3']:
+                raise KeyError
+            elif next_step in ['exit', '3']:
+                return
 
-                username = input('Username: ')
-                password = input('Password: ')
-                options[next_step](username, password)
-                logged_in = True
+            username = input('Username: ') if not logged_in else username
+            second_field = input('Password: ') if not logged_in else\
+                input('Amount: ')
+            menu[logged_in][next_step](username, second_field)
+            logged_in = True
 
-            except LoginError as e:
-                print(e)
-                next_step = input('login or signup or exit: ')
+        except LoginError as e:
+            print(e)
 
-            except UserExistsError:
-                print('Username is already in use')
-                next_step = input('login or signup or exit: ')
+        except UserExistsError:
+            print('Username is already in use')
 
-            except KeyError:
-                print('Incorrect action')
-                next_step = input('login or signup or exit: ')
+        except KeyError:
+            print('Incorrect action')
 
-        else:
-            current_user(username)
-            try:
-                options = {
-                    'withdraw': withdraw,
-                    'deposit': deposit,
-                    '1': withdraw,
-                    '2': deposit,
-                }
-                next_step = input('withdraw or deposit or exit: ')
-
-                if next_step == 'exit' or next_step == '3':
-                    return
-                elif next_step not in options.keys():
-                    raise KeyError
-
-                amount = float(input('Amount: '))
-                options[next_step](username, amount)
-
-            except KeyError:
-                print('Incorrect action')
-
-            except ValueError:
-                print('Incorrect amount inserted')
+        except ValueError:
+            print('Incorrect amount inserted')
 
 
 if __name__ == '__main__':  # start this from "GeekHub homework" directory

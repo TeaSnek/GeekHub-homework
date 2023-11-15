@@ -23,11 +23,13 @@ def extractor(filename, length):
 
             mid = len(content) // 2
 
-            print(f'Beginning: {content[:length]}')
+            beginning = content[:length]
+            middle = content[mid-length//2: mid+length//2 + length % 2]
+            end = content[-length:]
+            print(f'Beginning: {beginning}')
             # i decided just to print second symbol from two
-            print(f'Middle: {content[
-                mid-length//2: mid+length//2 + length % 2]}')
-            print(f'End: {content[-length:]}')
+            print(f'Middle: {middle}')
+            print(f'End: {end}')
 
     except FileNotFoundError:
         print(f"{file_path}' not exist")

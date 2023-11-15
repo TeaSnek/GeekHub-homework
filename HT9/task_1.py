@@ -39,7 +39,8 @@ def crossroad(iterations=30):
     current_auto = next(traffic_lights)
     curr_timeout, next_timeout = 6, 2
     for i in range(iterations):
-        print(f'{current_auto}|{'Green' if current_auto == 'Red' else 'Red'}')
+        current_ped = 'Green' if current_auto == 'Red' else 'Red'
+        print(f'{current_auto}|{current_ped}')
         if i % curr_timeout == 0:
             current_auto = next(traffic_lights)
             curr_timeout, next_timeout = next_timeout, curr_timeout
