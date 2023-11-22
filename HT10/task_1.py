@@ -305,32 +305,39 @@ def menu():
     }
     next_step = ''
     while next_step != 'exit':
+        if isinstance(client_id, int):
+            show_user(client_id)
+        print('Enter name or a number of action:')
+        translate_table = {}
+        for i, option in zip(
+                range(len(menu_dict[type(client_id)])),
+                menu_dict[type(client_id)].keys()):
+            print(f'{i+1}. {option}')
+            translate_table[ord(f'{i+1}')] = option
+        print('3. exit')
+        next_step = input('Input: ').strip().translate(translate_table)
+
+        if next_step not in menu_dict[type(client_id)].keys()\
+                and next_step not in ['exit', '3']:
+            print('Wrong action')
+            continue
+
+        elif next_step in ['exit', '3']:
+            return
+        username = input('Username: ') if client_id is None else ''
+        password = input('Password: ') if client_id is None else ''
         try:
-            if isinstance(client_id, int):
-                show_user(client_id)
-            print('Enter name or a number of action:')
-            translate_table = {}
-            for i, option in zip(
-                    range(len(menu_dict[type(client_id)])),
-                    menu_dict[type(client_id)].keys()):
-                print(f'{i+1}. {option}')
-                translate_table[ord(f'{i+1}')] = option
-            print('3. exit')
-            next_step = input('Input: ').strip().translate(translate_table)
-            if next_step not in menu_dict[type(client_id)].keys()\
-                    and next_step not in ['exit', '3']:
-                raise KeyError
-            elif next_step in ['exit', '3']:
-                return
-            username = input('Username: ') if client_id is None else ''
-            password = input('Password: ') if client_id is None else ''
             amount = int(
                 input('Amount: ')) if isinstance(client_id, int) else ''
-            args = []
-            for item in [username, password, client_id, amount]:
-                if item:
-                    args.append(item)
+        except ValueError:
+            print('Wrong value')
+            continue
 
+        args = []
+        for item in [username, password, client_id, amount]:
+            if item:
+                args.append(item)
+        try:
             if not client_id:
                 client_id = menu_dict[type(client_id)][next_step](*args)
 
@@ -339,7 +346,7 @@ def menu():
 
             else:
                 menu_dict[type(client_id)][next_step](*args)
-
+        
         except SignUpError as e:
             print(e)
 
