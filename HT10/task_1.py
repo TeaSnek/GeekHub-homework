@@ -69,10 +69,10 @@ def validate_password(password):
         raise ValidationError('Password must contain a least 1 lower letter')
 
 
-def validate_username(password):
-    if len(password) < 6:
+def validate_username(username):
+    if len(username) < 6:
         raise ValidationError('Username must be longer than 6 characers')
-    elif len(password) > 20:
+    elif len(username) > 20:
         raise ValidationError('Username must be shorter than 20 characters')
 
 
@@ -249,7 +249,7 @@ def inq_deposit():
                            balance_1000 = ?
                            WHERE id = ?""",
                            (*new_balance, TERMINAL_ID))
-        conn.commit()
+            conn.commit()
 
     except ValueError as e:
         raise TerminalError(e)
