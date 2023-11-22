@@ -162,7 +162,7 @@ class Interface:
     def __init__(self) -> None:
         self.user = User()
         self.terminal = Terminal(TERMINAL_ID)
-        self.state = 'login'
+        self.state = 'login_menu'
 
     def start(self):
         while self.state != 'exit':
@@ -286,8 +286,8 @@ class Interface:
                     elif action == '1' or action == 'inspect':
                         self.state = 'inspect'
                         return
-                    elif action == '2' or action == 'set balance':
-                        self.state = 'withdraw'
+                    elif action == '2' or action == 'set_balance':
+                        self.state = 'set_balance'
                         return
                     elif action == '3' or action == 'logout':
                         self.user.logout()
@@ -309,7 +309,7 @@ class Interface:
                         print(f'Banknote {volume} : {amount}')
                     self.state = 'main_menu'
 
-                case 'set balance':
+                case 'set_balance':
                     print('Set new amount of banknotes')
                     new_balance = []
                     values = (10, 20, 50, 100, 200, 500, 1000)
@@ -396,3 +396,8 @@ class Interface:
         elif len(username) > 20:
             raise ValidationError(
                 'Username must be shorter than 20 characters')
+
+
+if __name__ == '__main__':
+    session = Interface()
+    session.start()
