@@ -196,29 +196,8 @@ def withdraw(client_id, amount):
 
 
 def deposit(client_id, amount):
-    deposit_amount = 0
-    while amount >= 10:
-        if amount >= 1000:
-            amount -= 1000
-            deposit_amount += 1000
-        elif amount >= 500:
-            amount -= 500
-            deposit_amount += 500
-        elif amount >= 200:
-            amount -= 200
-            deposit_amount += 200
-        elif amount >= 100:
-            amount -= 100
-            deposit_amount += 100
-        elif amount >= 50:
-            amount -= 50
-            deposit_amount += 50
-        elif amount >= 20:
-            amount -= 20
-            deposit_amount += 20
-        elif amount >= 10:
-            amount -= 10
-            deposit_amount += 10
+    deposit_amount = amount // 10 * 10
+    amount = amount % 10
 
     with sqlite3.connect(Path(BASE_DIR, DATABASE_FILE)) as conn:
         cursor = conn.cursor()
@@ -346,7 +325,7 @@ def menu():
 
             else:
                 menu_dict[type(client_id)][next_step](*args)
-        
+
         except SignUpError as e:
             print(e)
 
