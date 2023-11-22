@@ -117,7 +117,7 @@ class User:
         self.__superuser = False
 
     def is_logged(self):
-        return self.username is None
+        return not (self.username is None)
 
     def is_superuser(self):
         return self.__superuser
@@ -128,7 +128,7 @@ class User:
         return f'username: {self.username} | balance: {self.balance}'
 
     def get_balance(self):
-        if self.is_logged() and not self.is_superuser:
+        if self.is_logged() and not self.is_superuser():
             with sqlite3.connect(Path(BASE_DIR, DATABASE_FILE)) as conn:
                 cursor = conn.cursor()
                 cursor.execute('''SELECT balance FROM users WHERE id = ?''',
@@ -179,8 +179,8 @@ class Interface:
                     if action == '0' or action == 'exit':
                         self.state = 'exit'
                         return
-                    elif action == '1' or action == 'logout':
-                        self.state = 'logout'
+                    elif action == '1' or action == 'login':
+                        self.state = 'login'
                         return
                     elif action == '2' or action == 'signup':
                         self.state = 'signup'
@@ -198,6 +198,7 @@ class Interface:
                         return
                     else:
                         print('Incorrect login or password')
+                        self.state = 'login_menu'
                         return
 
                 case 'signup':
@@ -211,8 +212,6 @@ class Interface:
                         self.state = 'login_menu'
                         return
                     self.signup(username, password)
-                    self.user.login(username, password)
-                    self.state = 'main_menu'
                     return
 
                 case 'main_menu':
@@ -248,6 +247,7 @@ class Interface:
                         return
                     try:
                         self.process_withdrawal(amount)
+                        self.state = 'main_menu'
                     except WithdrawError as e:
                         print(e)
                         self.state = 'main_menu'
@@ -256,7 +256,7 @@ class Interface:
                 case 'deposit':
                     amount = 0
                     try:
-                        amount = int(input('Input amount to deposit'))
+                        amount = int(input('Input amount to deposit: '))
                     except ValueError:
                         print('Incorrect amount')
                         self.state = 'main_menu'
@@ -298,14 +298,13 @@ class Interface:
                         return
 
                 case 'inspect':
-                    volumes = (10, 20, 50, 100, 200, 500, 1000)
                     terminal_balance = self.terminal.get_balance(local=True)
                     print('Current amount of banknotes (local):')
-                    for volume, amount in zip(volumes, terminal_balance):
+                    for volume, amount in terminal_balance.items():
                         print(f'Banknote {volume} : {amount}')
                     terminal_balance = self.terminal.get_balance()
                     print('Current amount of banknotes (server):')
-                    for volume, amount in zip(volumes, terminal_balance):
+                    for volume, amount in terminal_balance.items():
                         print(f'Banknote {volume} : {amount}')
                     self.state = 'main_menu'
 
@@ -320,6 +319,7 @@ class Interface:
                     except ValueError:
                         print('Incorrect amount')
                     self.terminal.set_balance(*new_balance)
+                    self.state = 'main_menu'
 
     def signup(self, username, password):
         with sqlite3.connect(Path(BASE_DIR, DATABASE_FILE)) as conn:
@@ -331,16 +331,20 @@ class Interface:
             if cursor.fetchone():
                 print('Username exists')
                 self.state = 'login_menu'
+                return
             else:
                 cursor.execute('''
                     INSERT INTO users (username, password, balance)
                             VALUES (?, ?, 0)''', (username, password))
                 conn.commit()
+                self.user.login(username, password)
+                self.state = 'main_menu'
 
     def process_withdrawal(self, amount):
         if self.user.balance < amount:
             raise WithdrawError('Withdraw amount is higher than balance')
-        new_balance = list(self.terminal.get_balance())
+        self.user.withdraw(amount)
+        new_balance = list(self.terminal.get_balance().values())
         volumes = (10, 20, 50, 100, 200, 500, 1000)
         while amount:
             if amount >= volumes[-1] and new_balance[-1]:
@@ -367,7 +371,6 @@ class Interface:
             else:
                 raise WithdrawError('Impossible to withdraw')
         self.terminal.set_balance(*new_balance)
-        self.user.withdraw(amount)
         return True
 
     @staticmethod
