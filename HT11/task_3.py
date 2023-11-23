@@ -6,6 +6,7 @@
 
 import sqlite3
 from pathlib import Path
+from random import randint as rint
 
 BASE_DIR = Path(__file__).parent
 DATABASE_FILE = ('bank.db')
@@ -333,9 +334,12 @@ class Interface:
                 self.state = 'login_menu'
                 return
             else:
+                start_balance = 50 if rint(1, 10) == 10 else 0
                 cursor.execute('''
                     INSERT INTO users (username, password, balance)
-                            VALUES (?, ?, 0)''', (username, password))
+                            VALUES (?, ?, ?)''', (
+                                username, password, start_balance
+                    ))
                 conn.commit()
                 self.user.login(username, password)
                 self.state = 'main_menu'
