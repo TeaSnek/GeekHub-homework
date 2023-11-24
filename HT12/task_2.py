@@ -38,7 +38,7 @@ class Terminal:
         self.id = terminal_id
         self.balance = self.get_balance()
 
-    def get_balance(self, local=False):
+    def get_balance(self, local=False) -> dict[int, int]:
         if local:
             return self.balance
 
@@ -95,7 +95,8 @@ class User:
             result = cursor.fetchone()
             if result:
                 self.username = username
-                self._client_id, self.balance = result[0]
+                self._client_id = result[0]
+                self.balance = result[1]
             else:
                 raise LoginError('Wrong login or password')
 
@@ -138,6 +139,7 @@ class User:
                            (self.get_balance() + amount,
                             self._client_id))
             conn.commit()
+        self.balance += amount
 
     def withdraw(self, amount):
         with sqlite3.connect(Path(BASE_DIR, DATABASE_FILE)) as conn:
@@ -145,7 +147,7 @@ class User:
             cursor.execute("UPDATE users SET balance = ? WHERE id = ?",
                            (self.get_balance() - amount, self._client_id))
             conn.commit()
-            self.balance -= amount
+        self.balance -= amount
 
 
 class Interface:
@@ -182,7 +184,12 @@ class Interface:
                 case 'login':
                     username = input('Input your username: ')
                     password = input('Input your password: ')
-                    self.user.login(username, password)
+                    try:
+                        self.user.login(username, password)
+                    except LoginError as e:
+                        print(e)
+                        self.state = 'main_menu'
+                        return
                     if self.user.is_logged():
                         self.state = 'main_menu'
                         return
@@ -205,6 +212,7 @@ class Interface:
                     return
 
                 case 'main_menu':
+                    print(self.user)
                     print('Select your next step:')
                     print('1. Deposit')
                     print('2. Withdraw')
@@ -265,7 +273,6 @@ class Interface:
         else:
             match self.state:
                 case 'main_menu':
-                    print(self.user)
                     print('Select your next step:')
                     print('1. Inspect')
                     print('2. Set balance')
@@ -337,35 +344,48 @@ class Interface:
     def process_withdrawal(self, amount):
         if self.user.balance < amount:
             raise WithdrawError('Withdraw amount is higher than balance')
+
+        balance_diff = self.withdraw_from_balance(amount)
+        new_balance = [x - y for x, y in zip(self.terminal.balance.values(),
+                                             balance_diff)]
         self.user.withdraw(amount)
-        new_balance = list(self.terminal.get_balance().values())
-        volumes = (10, 20, 50, 100, 200, 500, 1000)
-        while amount:
-            if amount >= volumes[-1] and new_balance[-1]:
-                amount -= 1000
-                new_balance[-1] -= 1
-            elif amount >= volumes[-2] and new_balance[-2]:
-                amount -= 500
-                new_balance[-2] -= 1
-            elif amount >= volumes[-3] and new_balance[-3]:
-                amount -= 200
-                new_balance[-3] -= 1
-            elif amount >= volumes[-4] and new_balance[-4]:
-                amount -= 100
-                new_balance[-4] -= 1
-            elif amount >= volumes[-5] and new_balance[-5]:
-                amount -= 50
-                new_balance[-5] -= 1
-            elif amount >= volumes[-6] and new_balance[-6]:
-                amount -= 20
-                new_balance[-6] -= 1
-            elif amount >= volumes[-7] and new_balance[-7]:
-                amount -= 10
-                new_balance[-7] -= 1
-            else:
-                raise WithdrawError('Impossible to withdraw')
         self.terminal.set_balance(*new_balance)
         return True
+
+    def withdraw_from_balance(self, amount: int) -> list[int]:
+        total_sum = sum(key * value for key, value in
+                        self.terminal.get_balance().items())
+        if total_sum < amount:
+            raise WithdrawError('Not enough banknotes in terminal')
+        keys = list(self.terminal.balance.keys())
+        start = max(i for i in range(len(keys))
+                    if self.terminal.balance[keys[i]] != 0)
+        while start != 0:
+            diff_values = [0] * len(keys)
+            change = amount
+            while change:
+                try:
+                    undo_key = min(keys[i] for i in range(len(keys))
+                                   if diff_values[i] != 0)
+                    change += undo_key
+                    diff_values[keys.index(undo_key)] -= 1
+                    i = keys.index(undo_key) - 1
+                except ValueError:
+                    undo_key = keys[start]
+                    i = start
+                if undo_key == min(key for key, value in
+                                   self.terminal.balance.items()
+                                   if value != 0):
+                    break
+                while i >= 0:
+                    diff_values[i] += min(change//keys[i],
+                                          self.terminal.balance[keys[i]])
+                    change -= keys[i] * diff_values[i]
+                    if change == 0:
+                        return diff_values
+                    i -= 1
+            start -= 1
+        raise WithdrawError('Impossible to withdraw')
 
     @staticmethod
     def validate_password(password):
