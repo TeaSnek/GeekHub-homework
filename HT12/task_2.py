@@ -350,6 +350,10 @@ class Interface:
                                              balance_diff)]
         self.user.withdraw(amount)
         self.terminal.set_balance(*new_balance)
+        values = (10, 20, 50, 100, 200, 500, 1000)
+        print('Withdrawed:')
+        for key, value in zip(values, balance_diff):
+            print(f'{key} x{value}')
         return True
 
     def withdraw_from_balance(self, amount: int) -> list[int]:
