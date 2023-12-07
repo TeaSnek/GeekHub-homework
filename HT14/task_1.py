@@ -190,7 +190,7 @@ class Interface:
                         self.user.login(username, password)
                     except LoginError as e:
                         print(e)
-                        self.state = 'main_menu'
+                        self.state = 'login_menu'
                         return
                     if self.user.is_logged():
                         self.state = 'main_menu'

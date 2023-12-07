@@ -40,6 +40,9 @@ if __name__ == '__main__':
     end_day = ''
     today_text = dt.datetime.today().strftime('%d.%m.%Y')
 
+    print('Avaliable currencies: ')
+    print(*AVALIABLE_CODES, sep=', ')
+
     while target_currency not in AVALIABLE_CODES:
         target_currency = input('Input correct currency code: ').upper()
 
