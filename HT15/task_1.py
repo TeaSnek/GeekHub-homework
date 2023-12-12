@@ -31,7 +31,6 @@ if __name__ == '__main__':
     category = get_category()
     startindex = 0
     endindex = 50
-    refresh_file(category)
     while True:
 
         response = requests.get(SEARCH_API, params={
