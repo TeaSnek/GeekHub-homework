@@ -75,10 +75,17 @@ if __name__ == '__main__':
             print('Parsed')
             break
 
-        with open(Path(BASE_DIR, f'category_{category}.json'), 'a+') as f:
-            for item in data['items']:
-                f.write(json.dumps(item) + '\n')
-            print(f'From: {startindex} to {endindex}')
+        if startindex == 0:
+            with open(Path(BASE_DIR, f'category_{category}.json'), 'w') as f:
+                for item in data['items']:
+                    f.write(json.dumps(item) + '\n')
+                print(f'From: {startindex} to {endindex}')
+
+        else:
+            with open(Path(BASE_DIR, f'category_{category}.json'), 'a') as f:
+                for item in data['items']:
+                    f.write(json.dumps(item) + '\n')
+                print(f'From: {startindex} to {endindex}')
 
         sleep(10)
         startindex, endindex = endindex + 1, endindex + 50
