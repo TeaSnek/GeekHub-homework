@@ -6,12 +6,12 @@
 зберігти в CSV файл.
 """
 
-import requests
-import bs4
-from random import randint
 from pathlib import Path
+from random import randint
 from time import sleep
 
+import bs4
+import requests
 
 base_domain = 'https://www.expireddomains.net'
 
@@ -114,11 +114,16 @@ if __name__ == '__main__':
             break
 
         parsed_table = parse_table(table_rows)
-
-        with open(Path(BASE_DIR, 'domains.csv'), 'a') as f:
-            for domain in parsed_table:
-                f.write(','.join([str(value) for value in domain.values()])
-                        + '\n')
+        try:
+            with open(Path(BASE_DIR, 'domains.csv'), 'a') as f:
+                for domain in parsed_table:
+                    f.write(','.join([str(value) for value in domain.values()])
+                            + '\n')
+        except FileNotFoundError:
+            with open(Path(BASE_DIR, 'domains.csv'), 'w') as f:
+                for domain in parsed_table:
+                    f.write(','.join([str(value) for value in domain.values()])
+                            + '\n')
 
         next_page_selector = soup.select_one('a.next')
         if next_page_selector:

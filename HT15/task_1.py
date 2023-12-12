@@ -27,12 +27,16 @@ def get_category():
             print('Invalid category id, it must be a number')
 
 
+def refresh_file(category):  # create or cleaning file for category
+    with open(Path(BASE_DIR, f'category_{category}.json'), 'w') as f:
+        f.write('')
+
+
 if __name__ == '__main__':
     category = get_category()
     startindex = 0
     endindex = 50
-    with open(Path(BASE_DIR, f'category_{category}.json'), 'w') as f:
-        ...
+    refresh_file(category)
     while True:
 
         response = requests.get(SEARCH_API, params={
