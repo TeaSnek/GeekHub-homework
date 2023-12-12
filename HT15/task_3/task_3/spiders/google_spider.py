@@ -13,23 +13,23 @@ class GoogleSpiderSpider(scrapy.Spider):
     start_urls = ['https://chrome.google.com/webstore/sitemap']
 
     def parse(self, response: XmlResponse):
-        soup = bs4.BeautifulSoup(response._body, 'xml')
+        soup = bs4.BeautifulSoup(response.body, 'xml')
         shards = soup.select('sitemap loc')
         for shard in shards:
             yield response.follow(shard.text, callback=self.parse_shard)
 
-    def parse_shard(self, response):
-        soup = bs4.BeautifulSoup(response._body, 'xml')
+    def parse_shard(self, response: XmlResponse):
+        soup = bs4.BeautifulSoup(response.body, 'xml')
         pages = soup.select('loc')
         for page in pages:
             yield response.follow(page.text, callback=self.parse_page)
 
     def parse_page(self, response: XmlResponse):
-        soup = bs4.BeautifulSoup(response._body, 'html.parser')
+        soup = bs4.BeautifulSoup(response.text, 'html.parser')
         short_info_selector = soup.select_one('div[itemprop="description"]')
         short_info_text = ''
         if short_info_selector:
-            short_info_text = str(short_info_selector.text)
+            short_info_text = short_info_selector.text
         short_info_text = re.sub(r'(\,|\W+)', ' ', short_info_text)
         title_selector = soup.select_one('h1')
         title_text = title_selector.text if title_selector else ''

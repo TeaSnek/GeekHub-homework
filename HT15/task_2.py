@@ -41,12 +41,49 @@ USER_AGENTS = [
 BASE_DIR = Path(__file__).parent
 
 
-if __name__ == '__main__':
+def set_csv_headers():
     with open(Path(BASE_DIR, 'domains.csv'), 'w') as f:
-        print('domain,backlinks,domainpop,birth,' +
-              'archive_crawls,dotcom_status,dotnet_status,' +
-              'dotorg_status,tlds_regs,related_domains,' +
-              'dropped,status', end='\n', file=f)
+        f.write('domain,backlinks,domainpop,birth,' +
+                'archive_crawls,dotcom_status,dotnet_status,' +
+                'dotorg_status,tlds_regs,related_domains,' +
+                'dropped,status\n')
+
+
+def parse_table(table_selector: bs4.ResultSet):
+    parsed_table = []
+    for row in table_selector:
+        if not row.select_one('td.field_domain'):
+            continue
+        row_dict = {
+            'domain': row.select_one('td.field_domain a'),
+            'backlinks': row.select_one('td.field_bl a'),
+            'domainpop': row.select_one('td.field_domainpop a'),
+            'birth': row.select_one('td.field_abirth a'),
+            'archive_crawls': row.select_one('td.field_aentries a'),
+            'dotcom_status': row.select_one('td.field_statuscom a'),
+            'dotnet_status': row.select_one('td.field_statusnet a'),
+            'dotorg_status': row.select_one('td.field_statusorg a'),
+            'tlds_regs': row.select_one('td.field_statustld_registered'),
+            'related_domains': row.select_one('td.field_related_cnobi'),
+            'dropped': row.select_one('td.field_changes'),
+            'status': row.select_one('td.field_whois a'),
+            }
+
+        row_texted_dict = {}
+        for key, selector in row_dict.items():
+            if selector:
+                try:
+                    row_texted_dict[key] = int(selector.text)
+                except ValueError:
+                    row_texted_dict[key] = selector.text
+            else:
+                row_texted_dict[key] = ''
+        parsed_table.append(row_texted_dict)
+    return parsed_table
+
+
+if __name__ == '__main__':
+    set_csv_headers()
     next_page = base_domain + '/deleted-domains/'
     while next_page:
         headers = {
@@ -71,41 +108,18 @@ if __name__ == '__main__':
         response = requests.get(next_page, headers=headers)
         soup = bs4.BeautifulSoup(response.text, 'html.parser')
         table_rows = soup.select('table.base1 tr')
+
         if not table_rows:
             print('Thats all')
             break
-        domain_id = 0
-        parsed_page = []
-        for row in table_rows:
-            if not row.select_one('td.field_domain'):
-                continue
-            row_dict = {
-                'domain': row.select_one('td.field_domain a'),
-                'backlinks': row.select_one('td.field_bl a'),
-                'domainpop': row.select_one('td.field_domainpop a'),
-                'birth': row.select_one('td.field_abirth a'),
-                'archive_crawls': row.select_one('td.field_aentries a'),
-                'dotcom_status': row.select_one('td.field_statuscom a'),
-                'dotnet_status': row.select_one('td.field_statusnet a'),
-                'dotorg_status': row.select_one('td.field_statusorg a'),
-                'tlds_regs': row.select_one('td.field_statustld_registered'),
-                'related_domains': row.select_one('td.field_related_cnobi'),
-                'dropped': row.select_one('td.field_changes'),
-                'status': row.select_one('td.field_whois a'),
-                }
-            row_texted_dict = {}
-            for key, selector in row_dict.items():
-                if selector:
-                    try:
-                        row_texted_dict[key] = int(selector.text)
-                    except ValueError:
-                        row_texted_dict[key] = selector.text
-            domain_id += 1
-            parsed_page.append(row_texted_dict)
-            print(domain_id, row_texted_dict)
+
+        parsed_table = parse_table(table_rows)
+
         with open(Path(BASE_DIR, 'domains.csv'), 'a') as f:
-            for domain in parsed_page:
-                print(*list(domain.values()), sep=',', end='\n', file=f)
+            for domain in parsed_table:
+                f.write(','.join([str(value) for value in domain.values()])
+                        + '\n')
+
         next_page_selector = soup.select_one('a.next')
         if next_page_selector:
             next_page = base_domain + str(next_page_selector.get('href'))

@@ -11,6 +11,7 @@
 
 import requests
 import json
+from time import sleep
 from pathlib import Path
 
 SEARCH_API = 'https://www.sears.com/api/sal/v3/products/search'
@@ -28,21 +29,52 @@ def get_category():
 
 if __name__ == '__main__':
     category = get_category()
-    response = requests.get(SEARCH_API, params={
-        'searchType': 'category',
-        'store': 'Sears',
-        'storeId': 10153,
-        'catGroupId': category,
-        'filterValueLimit': 500,
-        'endIndex': 300,
-    }, headers={
-        'Authorization': 'SEARS'
-    })
-    data = response.json()
-    if 'errors' in data.keys():
-        print('Something went wrong')
-        exit()
-
+    startindex = 0
+    endindex = 50
     with open(Path(BASE_DIR, f'category_{category}.json'), 'w') as f:
-        for item in data['items']:
-            print(json.dumps(item), file=f, end='\n')
+        ...
+    while True:
+
+        response = requests.get(SEARCH_API, params={
+            'searchType': 'category',
+            'store': 'Sears',
+            'storeId': 10153,
+            'catGroupId': category,
+            'filterValueLimit': 500,
+            'startIndex': startindex,
+            'endIndex': endindex,
+        }, headers={
+            'authority': 'www.sears.com',
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+            'authorization': 'SEARS',
+            'cache-control': 'no-cache',
+            'content-type': 'application/json',
+            'pragma': 'no-cache',
+            'sec-ch-ua': '"Opera GX";v="105", "Chromium";v="119"' +
+            ', "Not?A_Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+        })
+
+        try:
+            data = response.json()
+        except requests.exceptions.JSONDecodeError:
+            print(response.status_code)
+            sleep(60)
+            continue
+
+        if 'errors' in data.keys():
+            print('Parsed')
+            break
+
+        with open(Path(BASE_DIR, f'category_{category}.json'), 'a+') as f:
+            for item in data['items']:
+                f.write(json.dumps(item) + '\n')
+            print(f'From: {startindex} to {endindex}')
+
+        sleep(10)
+        startindex, endindex = endindex + 1, endindex + 50
