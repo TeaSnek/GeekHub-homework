@@ -45,7 +45,6 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
 )
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.support import expected_conditions as EC
