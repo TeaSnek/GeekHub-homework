@@ -38,8 +38,6 @@ import os
 from pathlib import Path
 import shutil
 
-import cv2
-import numpy as np
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import (
@@ -50,11 +48,9 @@ from selenium.common.exceptions import (
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.select import Select
-from webdriver_manager.chrome import ChromeDriverManager
 
 DEFAULT_SERVISE_ARGS = [
     '--no-sandbox',
@@ -92,16 +88,13 @@ class TaskScraper:
         self.file_url = self.site_url + 'orders.csv'
         self.file_content = []
         self.driver = webdriver.Chrome(
-            service=ChromeService(
-                ChromeDriverManager().install(),
-            ),
             options=chrome_opions
         )
 
     def start(self):
         self.get_file()
         self.create_or_clear_directory()
-        self.open_site()
+        self.process_site()
 
     def create_or_clear_directory(self):
         directory_path = Path(BASE_DIR, 'output')
@@ -109,18 +102,6 @@ class TaskScraper:
             shutil.rmtree(directory_path)
 
         os.makedirs(directory_path)
-
-    def get_picture(self, pic_tag: WebElement):
-        pic_location = pic_tag.location
-        pic_size = pic_tag.size
-        screenshot = self.driver.get_screenshot_as_png()
-        screenshot_np = np.frombuffer(screenshot, np.uint8)
-        image = cv2.imdecode(screenshot_np, cv2.IMREAD_COLOR)
-        left = int(pic_location['x'])
-        top = int(pic_location['y'])
-        right = int(pic_location['x'] + pic_size['width'])
-        bottom = int(pic_location['y'] + pic_size['height'])
-        return image[top:bottom, left:right]
 
     def form_pdf(self, receipt, order_num):
         html_template = f'''
@@ -155,7 +136,7 @@ class TaskScraper:
         except requests.RequestException:
             print('Unable to get orders data!')
 
-    def open_site(self):
+    def process_site(self):
         self.driver.get(self.site_url)
         order_button = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -165,14 +146,17 @@ class TaskScraper:
         for robot in self.file_content:
             self.order_robot(robot)
 
-    def order_robot(self, robot_info):
+    def close_order_popup(self):
         noway_btn = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.CLASS_NAME, 'btn-dark')))
         noway_btn.click()
+
+    def fill_order(self, robot_info):
+        # finding inputs
         head_selector = Select(self.driver.find_element(By.NAME, 'head'))
         body_check = self.driver.find_element(
             By.ID,
-            f'id-body-{robot_info['Body']}'
+            f'id-body-{robot_info["Body"]}'
         )
         leg_input = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -181,51 +165,66 @@ class TaskScraper:
         address_input = self.driver.find_element(By.NAME, 'address')
         head_selector.select_by_index(robot_info['Head'])
 
+        # input fields
         body_check.click()
         leg_input.send_keys(robot_info['Legs'])
         address_input.send_keys(robot_info['Address'])
 
+    def force_preview(self):
         preview_btn = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR,
                                         'button[id="preview"]')))
-        order_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR,
-                                        'button[id="order"]')))
         try:
             preview_btn.click()
         except ElementClickInterceptedException:
             sleep(1)
             preview_btn.click()
 
-        sleep(2)  # waiting picture to load
-        pic_loction = WebDriverWait(self.driver, 3).until(
-            EC.visibility_of_element_located((By.ID, 'robot-preview')))
-        robot_pic = self.get_picture(pic_loction)
-
+    def force_order(self):
+        order_btn = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR,
+                                        'button[id="order"]')))
         order_btn.click()
 
         try:
             alert_div = self.driver.find_element(By.CLASS_NAME, 'alert-danger')
             while alert_div.is_displayed():
                 order_btn.click()
-        except NoSuchElementException:
+        except NoSuchElementException:  # no alert
             pass
-        except StaleElementReferenceException:
+        except StaleElementReferenceException:  # alert gone
             pass
-        order_another_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'order-another')))
+
+    def save_order(self):
+        # saving pic element for future
+        pic_loction = WebDriverWait(self.driver, 3).until(
+            EC.visibility_of_element_located((By.ID, 'robot-preview')))
+        self.force_order()
+
         order_number = self.driver.find_element(By.CLASS_NAME,
                                                 'badge-success').text.lower()
-        cv2.imwrite(
-            filename=Path(BASE_DIR, 'output',
-                          f'{order_number}_robot.png').as_posix(),
-            img=robot_pic)
-
         receipt_div = self.driver.find_element(By.ID, 'receipt')
         receipt_html = receipt_div.get_attribute('outerHTML')
+
+        # saving pic and pdf
+        pic_loction.screenshot(Path(BASE_DIR, 'output',
+                                    f'{order_number}_robot.png').as_posix())
         self.form_pdf(receipt_html, order_number)
+
+    def order_next(self):
+        order_another_btn = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.ID, 'order-another')))
         order_another_btn = self.driver.find_element(By.ID, 'order-another')
         order_another_btn.click()
+
+    def order_robot(self, robot_info):
+        # closing popup
+        self.close_order_popup()
+        self.fill_order(robot_info)
+        self.force_preview()
+        sleep(2)  # waiting preview to load
+        self.save_order()
+        self.order_next()
 
     def __del__(self):
         try:
