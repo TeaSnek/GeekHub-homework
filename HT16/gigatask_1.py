@@ -196,7 +196,6 @@ class TaskScraper:
             pass
 
     def save_order(self):
-        # saving pic element for future
         pic_loction = WebDriverWait(self.driver, 3).until(
             EC.visibility_of_element_located((By.ID, 'robot-preview')))
         self.force_order()
@@ -218,7 +217,6 @@ class TaskScraper:
         order_another_btn.click()
 
     def order_robot(self, robot_info):
-        # closing popup
         self.close_order_popup()
         self.fill_order(robot_info)
         self.force_preview()
