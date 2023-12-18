@@ -188,7 +188,10 @@ class TaskScraper:
         try:
             alert_div = self.driver.find_element(By.CLASS_NAME, 'alert-danger')
             while alert_div.is_displayed():
-                order_btn.click()
+                try:
+                    order_btn.click()
+                except ElementClickInterceptedException:
+                    sleep(1)
         except NoSuchElementException:  # no alert
             pass
         except StaleElementReferenceException:  # alert gone
