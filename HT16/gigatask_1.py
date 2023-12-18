@@ -190,7 +190,7 @@ class TaskScraper:
             while alert_div.is_displayed():
                 try:
                     order_btn.click()
-                except ElementClickInterceptedException:
+                except ElementClickInterceptedException:  # clicked too fast
                     sleep(1)
         except NoSuchElementException:  # no alert
             pass
