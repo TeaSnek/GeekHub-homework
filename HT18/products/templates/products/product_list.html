@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+- Products
+{% endblock title %}
+
+{% block main %}
+    <legend><h1>All products</h1></legend>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Cost</th>
+        </tr>
+        {% for product in products_list %}
+            <tr>
+                <td>
+                    <a href="detail/{{product.sears_id}}">
+                        {{ product.product_name}}
+                    </a>
+                </td>
+                <td>{{ product.price}}$</td>
+            <tr>
+        {% endfor %}
+{% endblock main %}

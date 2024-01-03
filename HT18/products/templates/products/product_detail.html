@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+- {{ product_details.short_about }}
+{% endblock title %}
+
+{% block main %}
+    <h1> {{product_details.product_name}} </h1>
+    <table>
+        <tr>
+            <th>Product name</th>
+            <td>{{product_details.product_name}}<td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{product_details.price}} $<td>
+        </tr>
+        <tr>
+            <th>Sears ID</th>
+            <td>{{product_details.sears_id}}<td>
+        </tr>
+        <tr>
+            <th>About</th>
+            <td>{{product_details.short_about}}<td>
+        </tr>
+        <tr>
+            <th>Brand</th>
+            <td>{{product_details.brand}}<td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td>{{product_details.category}}<td>
+        </tr>
+        <tr>
+            <th>Link</th>
+            <td><a href="{{product_details.sears_link}}">{{product_details.sears_link}}</a><td>
+        </tr>
+    </table>
+{% endblock main %}
