@@ -115,3 +115,12 @@ def remove_from_cart(request, ):
         request.session['cart'].pop(data['product'], None)
     request.session.modified = True
     return HttpResponseRedirect(reverse('products:cart',))
+
+
+def flush_cart(request, ):
+    data = request.POST
+    redir = data.get('reverse', 'products:cart')
+    if request.session.get('cart', {}):
+        request.session['cart'].clear()
+    request.session.modified = True
+    return HttpResponseRedirect(reverse(redir,))

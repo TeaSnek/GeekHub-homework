@@ -39,6 +39,12 @@
                     </td>
                 <tr>
             {% endfor %}
+            <tr>
+                <form action="{% url 'products:flush_cart' %}" method="post">
+                    {%csrf_token%}
+                    <button name="reverse" value='products:cart'>Clear cart</button>
+                </form>
+            </tr>
         </table>
     {% else %}
         <h3>Cart is empty</h3>
