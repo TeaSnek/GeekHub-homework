@@ -14,7 +14,7 @@ from django.views.generic import (
     FormView
 )
 from django.urls import reverse
-
+from django.urls.exceptions import NoReverseMatch
 from . import models
 from . import utils
 
@@ -80,6 +80,7 @@ class CartListView(ListView):
 def add_to_cart(request, ):
     data = request.POST
     quantity = int(data['quantity'])
+    redir = request.POST.get('reverse', 'products:product_detail')
     if quantity > 0:
         if not request.session.get('cart', {}):
             request.session['cart'] = {data['product']: quantity}
@@ -92,8 +93,11 @@ def add_to_cart(request, ):
             except KeyError:
                 request.session['cart'][data['product']] = quantity
                 request.session.modified = True
-    return HttpResponseRedirect(reverse('products:product_detail',
-                                        args=(data['product'],)))
+    try:
+        return HttpResponseRedirect(reverse(redir,
+                                            args=(data['product'],)))
+    except NoReverseMatch:
+        return HttpResponseRedirect(reverse(redir,))
 
 
 def remove_from_cart(request, ):

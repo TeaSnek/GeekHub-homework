@@ -24,9 +24,17 @@
                     <td>{{ quantity }}</td>
                     <td>
                         <form action="{% url 'products:remove_from_cart' %}" method="post">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" size="3" value="{{ quantity }}" min="0" max="{{ quantity }}"/>
-                        <button name="product" value="{{ product.sears_id }}">Remove</button>
+                            {% csrf_token %}
+                            <input type="number" name="quantity" size="3" value="{{ quantity }}" min="0" max="{{ quantity }}"/>
+                            <button name="product" value="{{ product.sears_id }}">Remove</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'products:add_to_cart' %}" method="post">
+                            {%csrf_token%}
+                            <input type="hidden" name="reverse" value="products:cart"/>
+                            <input type="number" name="quantity" size="3" value="1" min="0"/>
+                            <button name="product" value="{{ product.sears_id }}">Add</button>
                         </form>
                     </td>
                 <tr>
