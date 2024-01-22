@@ -1,7 +1,7 @@
 from django import forms
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy
-from django.contrib.auth.models import User
 
 from . import models
 
@@ -26,15 +26,6 @@ class NewProductForm(forms.Form):
     )
 
 
-class LoginForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-
-    class Meta:
-        model = User
-        required_fields = ['username', 'password']
-        fields = ['username', 'password']
-
-
 class EditProductForm(forms.ModelForm):
     class Meta:
         model = models.Product
@@ -46,3 +37,9 @@ class EditProductForm(forms.ModelForm):
         queryset=models.Category.objects.all(),
         widget=forms.CheckboxSelectMultiple
     )
+
+
+class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.is_superuser

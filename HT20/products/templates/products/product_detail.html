@@ -60,7 +60,7 @@
     </table>
     {% if request.user.is_authenticated %}
         <h4>Want to buy some?</h4>
-        <form action="{% url 'products:add_to_cart' %}" method="post">
+        <form action="{% url 'userservice:add_to_cart' %}" method="post">
             {%csrf_token%}
             <input type="number" name="quantity" size="5" value="1" min="0"/>
             <button name="product" value="{{ product_details.sears_id }}">Add to Cart</button>

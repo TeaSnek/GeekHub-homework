@@ -22,5 +22,6 @@ from django.urls import (
 
 urlpatterns = [
     path('', include('products.urls')),
+    path('user/', include('userservice.urls')),
     path('admin/', admin.site.urls),
 ]

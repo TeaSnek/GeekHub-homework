@@ -1,11 +1,11 @@
 <a href='/products'>PRODUCTS</a>
 {% if request.user.is_authenticated %}
-    <a href='/cart'>CART</a>
+    <a href='{% url "userservice:cart" %}'>CART</a>
     {% if request.user.is_superuser %}
         <a href='/add_products'>SCRAPE</a>
     {% endif %}
     USER: {{request.user.username.upper}}
-    <a href="{% url 'products:logout' %}">LOGOUT</a>
+    <a href="{% url 'userservice:logout' %}">LOGOUT</a>
 {% else %}
-    <a href="{% url 'products:login' %}">LOG IN</a>
+    <a href="{% url 'userservice:login' %}">LOG IN</a>
 {% endif %}

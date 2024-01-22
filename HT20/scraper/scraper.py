@@ -63,62 +63,6 @@ def generate_headers():
     return random_headers
 
 
-def save_product(item: dict):
-    """
-    Creates or updates record in db
-    """
-    defaults = {
-        'product_name': item['name'].lower(),
-        'price': item['additionalAttributes']['salePrice'],
-        'sears_id': item['partNum'],
-        'brand': item['brandName'],
-        'category': item['category'],
-        'sears_link': SITE_BASE + item['additionalAttributes']['seoUrl'],
-    }
-
-    obj, created = Product.objects.update_or_create(
-        sears_id=item['partNum'],
-        defaults=defaults,
-    )
-
-    return created
-
-
-def scrape(category_id: int):
-    startindex = 0
-    endindex = 50
-    random_headers = generate_headers()
-    while True:
-        response = requests.get(SEARCH_API, params={
-            'searchType': 'category',
-            'store': 'Sears',
-            'storeId': 10153,
-            'catGroupId': category_id,
-            'filterValueLimit': 500,
-            'startIndex': startindex,
-            'endIndex': endindex,
-        }, headers=random_headers)
-
-        if response.status_code == 200:
-            data = response.json()
-            for item in data['items']:
-                created = save_product(item)
-                if created:
-                    print('Created', item['partNum'])
-                else:
-                    print('Updated', item['partNum'])
-            startindex, endindex = endindex + 1, endindex + 50
-
-        elif response.status_code == 404:
-            print(f'Category {category_id} scraped')
-            break
-
-        elif response.status_code == 429:
-            print('Request limited, waiting...')
-            sleep(60)
-            continue
-
-
 def excract_category(categories):
     result = [Category.objects.get(pk='All')]
     for category in categories:

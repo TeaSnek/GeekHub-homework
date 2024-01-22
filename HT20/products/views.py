@@ -2,12 +2,10 @@ import sys
 import subprocess as sp
 from typing import Any
 
-from django.contrib.auth import (
-    logout,
+from django.contrib.auth.decorators import (
+    user_passes_test,
 )
-from django.contrib.auth.views import (
-    LoginView,
-)
+
 from django.db.models.query import QuerySet
 from django.http import (
     HttpRequest,
@@ -21,7 +19,6 @@ from django.views.generic import (
     FormView,
 )
 from django.urls import reverse
-from django.urls.exceptions import NoReverseMatch
 
 from . import models
 from . import utils
@@ -68,7 +65,7 @@ class ProductDetailView(DetailView):
             request.session['cart'] = {product: quantity}
 
 
-class AddProductsFormView(FormView):
+class AddProductsFormView(utils.SuperUserRequiredMixin, FormView):
     template_name = 'products/add_products.html'
     form_class = utils.NewProductForm
     success_url = 'products'
@@ -85,7 +82,7 @@ class AddProductsFormView(FormView):
         return super(AddProductsFormView, self).form_valid(form)
 
 
-class EditProductFormView(FormView):
+class EditProductFormView(utils.SuperUserRequiredMixin, FormView):
     template_name = 'products/edit.html'
     form_class = utils.EditProductForm
     context_object_name = 'product_details'
@@ -126,80 +123,17 @@ class EditProductFormView(FormView):
         return super().form_valid(form)
 
 
-class LoginFormView(LoginView):
-    template_name = 'products/login.html'
-    next_page = 'products:landing'
-
-
-class CartListView(ListView):
-    template_name = 'products/cart_list.html'
-    context_object_name = 'cart_list'
-
-    def get(self, request, *args, **kwargs):
-        cart = request.session.get('cart', {})
-        print(cart)
-        self.object_list = {models.Product.objects.get(
-            sears_id=key): quantity for key, quantity in cart.items()}
-        context = self.get_context_data()
-        return self.render_to_response(context)
-
-
-def add_to_cart(request, ):
+@user_passes_test(lambda u: u.is_superuser)
+def delete_view(request):
     data = request.POST
-    quantity = int(data['quantity'])
-    redir = request.POST.get('reverse', 'products:product_detail')
-    if quantity > 0:
-        if not request.session.get('cart', {}):
-            request.session['cart'] = {data['product']: quantity}
-        else:
-            try:
-                print(request.session['cart'])
-                request.session['cart'][data['product']] += quantity
-                request.session.modified = True
-                print(request.session['cart'])
-            except KeyError:
-                request.session['cart'][data['product']] = quantity
-                request.session.modified = True
-    try:
-        return HttpResponseRedirect(reverse(redir,
-                                            args=(data['product'],)))
-    except NoReverseMatch:
-        return HttpResponseRedirect(reverse(redir,))
+    redir = data.get('reverse')
+    if data.get('product', ''):
+        product = models.Product.objects.get(pk=data['product'])
+        product.delete()
+    return HttpResponseRedirect(redir)
 
 
-def remove_from_cart(request, ):
-    data = request.POST
-    quantity = int(data['quantity'])
-    try:
-        if not (0 < quantity <= request.session.get(
-                'cart', {})[data['product']]):
-            return HttpResponseRedirect(reverse('products:cart',))
-    except KeyError:
-        return HttpResponseRedirect(reverse('products:cart',))
-
-    request.session['cart'][data['product']] -= quantity
-    if request.session['cart'][data['product']] == 0:
-        request.session['cart'].pop(data['product'], None)
-    request.session.modified = True
-    return HttpResponseRedirect(reverse('products:cart',))
-
-
-def flush_cart(request, ):
-    data = request.POST
-    redir = data.get('reverse', 'products:cart')
-    if request.session.get('cart', {}):
-        request.session['cart'].clear()
-    request.session.modified = True
-    return HttpResponseRedirect(reverse(redir,))
-
-
-def logout_view(request):
-    data = request.POST
-    redir = data.get('reverse', 'products:landing')
-    logout(request)
-    return HttpResponseRedirect(reverse(redir))
-
-
+@user_passes_test(lambda u: u.is_superuser)
 def update(request):
     data = request.POST
     redir = data.get('reverse',)
@@ -210,13 +144,4 @@ def update(request):
         'scrape',
         data.get('product', '')
     ])
-    return HttpResponseRedirect(redir)
-
-
-def delete_view(request):
-    data = request.POST
-    redir = data.get('reverse', )
-    if data.get('product', ''):
-        product = models.Product.objects.get(pk=data['product'])
-        product.delete()
     return HttpResponseRedirect(redir)
