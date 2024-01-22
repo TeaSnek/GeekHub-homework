@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+- Cart
+{% endblock title %}
+
+{% block main %}
+    <legend><h1>Cart</h1></legend>
+    {% if cart_list%}
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+                <th>Quantity</th>
+            </tr>
+            {% for product, quantity in cart_list.items %}
+                <tr>
+                    <td>
+                        <a href="detail/{{product.sears_id}}">
+                            {{ product}}
+                        </a>
+                    </td>
+                    <td>{{ product.price }}$</td>
+                    <td>{{ quantity }}</td>
+                    <td>
+                        <form action="{% url 'products:remove_from_cart' %}" method="post">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" size="3" value="{{ quantity }}" min="0" max="{{ quantity }}"/>
+                            <button name="product" value="{{ product.sears_id }}">Remove</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'products:add_to_cart' %}" method="post">
+                            {%csrf_token%}
+                            <input type="hidden" name="reverse" value="products:cart"/>
+                            <input type="number" name="quantity" size="3" value="1" min="0"/>
+                            <button name="product" value="{{ product.sears_id }}">Add</button>
+                        </form>
+                    </td>
+                <tr>
+            {% endfor %}
+            <tr>
+                <form action="{% url 'products:flush_cart' %}" method="post">
+                    {%csrf_token%}
+                    <button name="reverse" value='products:cart'>Clear cart</button>
+                </form>
+            </tr>
+        </table>
+    {% else %}
+        <h3>Cart is empty</h3>
+    {% endif %}
+        
+{% endblock main %}

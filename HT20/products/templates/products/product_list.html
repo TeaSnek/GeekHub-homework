@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+- {{ current }} Products
+{% endblock title %}
+
+{% block subheader %}
+    {% for category in categories %}
+        {% if category.products.exists %}
+            <a href="{% url 'products:category_list' category %}">
+                {{category}}    
+            </a>
+        {% endif %}
+    {% endfor %}
+{% endblock subheader %}
+
+{% block main %}
+    {% if products_list %}
+        <legend><h1>{{ current }} products</h1></legend>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+            </tr>
+            {% for product in products_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'products:product_detail' product.sears_id %}">
+                            {{ product.product_name}}
+                        </a>
+                    </td>
+                    <td>{{ product.price}}$</td>
+                <tr>
+            {% endfor %}
+    {% else %}
+        Category does not exists or empty
+    {% endif %}
+    
+{% endblock main %}
