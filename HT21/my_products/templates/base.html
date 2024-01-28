@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+          My products 
+          {% block title %}
+          {% endblock title %}
+        </title>
+    </head>
+    <body>
+        <div>
+            <h3>
+                {% include "header.html" %}
+                {% block header %}
+                {% endblock header %}
+            </h3>
+            <h4>
+                {% block subheader %}
+                {% endblock subheader %}
+            </h4>
+        </div>
+        {% block main %}
+        {% endblock main %}
+    </body>
+</html>

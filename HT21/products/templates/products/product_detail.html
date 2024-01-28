@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}
+- {{ product_details.short_about }}
+{% endblock title %}
+
+{% block main %}
+    <h1>
+        {{product_details.product_name}}
+        {% if request.user.is_superuser%}
+            <a href="{% url 'products:edit' product_details.sears_id%}">EDIT</a>
+            <form action="{% url 'products:delete' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name='reverse' value="{% url 'products:landing' %}"/>
+                <input name="product" value="{{ product_details.sears_id }}" type="hidden">
+                <input type='submit' value='delete'>
+            </form>
+        {% endif %}
+    </h1>
+    <table>
+        <tr>
+            <th>Product name</th>
+            <td>{{product_details.product_name}}<td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{product_details.price}} $<td>
+        </tr>
+        <tr>
+            <th>Sears ID</th>
+            <td>{{product_details.sears_id}}<td>
+        </tr>
+        <tr>
+            <th>About</th>
+            <td>{{product_details.short_about}}<td>
+        </tr>
+        <tr>
+            <th>Brand</th>
+            <td>{{product_details.brand}}<td>
+        </tr>
+        {% if product_details.category %}
+            <tr>
+                <th>Category</th>
+                <td>
+                {% for category in product_details.category.all %}
+                    {{category}}
+                {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <th>Category</th>
+                <td>No category<td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Link</th>
+            <td><a href="{{product_details.sears_link}}">{{product_details.sears_link}}</a><td>
+        </tr>
+    </table>
+    {% if request.user.is_authenticated %}
+        <h4>Want to buy some?</h4>
+        <form action="{% url 'userservice:add_to_cart' %}" method="post">
+            {%csrf_token%}
+            <input type="number" name="quantity" size="5" value="1" min="0"/>
+            <button name="product" value="{{ product_details.sears_id }}">Add to Cart</button>
+        </form>
+    {% else %}
+    {% endif %}
+{% endblock main %}

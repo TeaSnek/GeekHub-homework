@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+- Add Products
+{% endblock title %}
+
+{% block main %}
+<h1>Scrape new products</h1>
+<form action = "" method = "post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Submit">
+</form>
+{% endblock main %}
