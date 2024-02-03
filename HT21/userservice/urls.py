@@ -13,11 +13,6 @@ app_name = 'products'
 
 router = routers.DefaultRouter()
 
-# router.register(r'api/cart', api_views.ListAPIView, basename='cart')
-# router.register(r'api/admin/product', api_views.ProductViewSet)
-# router.register(r'api/category', api_views.CategoryReadOnlyModelViewSet)
-# router.register(r'api/admin/category', api_views.CategoryViewSet)
-
 app_name = 'userservice'
 
 urlpatterns = [

@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework import mixins
 from rest_framework.permissions import IsAdminUser
 
 from . import models
@@ -22,7 +23,11 @@ class ProductReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
         return models.Product.objects.filter(**params)
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(mixins.RetrieveModelMixin,
+                     mixins.UpdateModelMixin,
+                     mixins.DestroyModelMixin,
+                     mixins.ListModelMixin,
+                     viewsets.GenericViewSet):
     """
     API endpoint that allows products to be viewed or edited.
     """
