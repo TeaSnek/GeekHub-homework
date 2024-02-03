@@ -4,6 +4,6 @@ geekhub_env
 .vscode
 classwork
 *.sqlite3
-.env
 !HT20/*.sqlite3
 !HT21/*.sqlite3
+.env

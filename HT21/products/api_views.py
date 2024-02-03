@@ -46,7 +46,6 @@ class CategoryReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = models.Category.objects.all()
     serializer_class = serializers.CategorySerializer
-    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         model_fields_name = [field.name for field
