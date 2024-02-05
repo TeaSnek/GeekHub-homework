@@ -21,7 +21,6 @@ class CartListView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         cart = request.session.get('cart', {})
-        print(cart)
         self.object_list = {models.Product.objects.get(
             sears_id=key): quantity for key, quantity in cart.items()}
         context = self.get_context_data()
@@ -38,10 +37,8 @@ def add_to_cart(request, ):
             request.session['cart'] = {data['product']: quantity}
         else:
             try:
-                print(request.session['cart'])
                 request.session['cart'][data['product']] += quantity
                 request.session.modified = True
-                print(request.session['cart'])
             except KeyError:
                 request.session['cart'][data['product']] = quantity
                 request.session.modified = True

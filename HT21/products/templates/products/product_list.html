@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-
+{% load static %}
+<script type="text/javascript" src="{% static 'cartutils.js' %}"></script>
 {% block title %}
 - {{ current }} Products
 {% endblock title %}
@@ -18,6 +19,7 @@
     {% if products_list %}
         <legend><h1>{{ current }} products</h1></legend>
         <table>
+        {% csrf_token %}
             <tr>
                 <th>Name</th>
                 <th>Cost</th>
@@ -30,10 +32,18 @@
                         </a>
                     </td>
                     <td>{{ product.price}}$</td>
+                    <td>
+                        <button class="add_to_cart_btn" data-searsid="{{ product.sears_id }}">
+                            Add to Cart
+                        </button>
+                    </td>
                 <tr>
             {% endfor %}
     {% else %}
         Category does not exists or empty
     {% endif %}
-    
 {% endblock main %}
+
+{% block scripts %}
+    <script src="{% static 'userservice/add_to_cart.js' %}"></script>
+{% endblock scripts %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}
 - Cart
 {% endblock title %}
@@ -21,18 +21,18 @@
                         </a>
                     </td>
                     <td>{{ product.price }}$</td>
-                    <td>{{ quantity }}</td>
+                    <td class="{{ product.sears_id }}_quantity">{{ quantity }}</td>
                     <td>
-                        <form action="{% url 'userservice:remove_from_cart' %}" method="post">
+                        <form class="remove_form" action="{% url 'userservice:remove_from_cart' %}" method="post">
                             {% csrf_token %}
                             <input type="number" name="quantity" size="3" value="{{ quantity }}" min="0" max="{{ quantity }}"/>
                             <button name="product" value="{{ product.sears_id }}">Remove</button>
                         </form>
                     </td>
                     <td>
-                        <form action="{% url 'userservice:add_to_cart' %}" method="post">
+                        <form class="add_form" action="{% url 'userservice:add_to_cart' %}" method="post">
                             {%csrf_token%}
-                            <input type="hidden" name="reverse" value="products:cart"/>
+                            <input type="hidden" name="reverse" value="userservice:cart"/>
                             <input type="number" name="quantity" size="3" value="1" min="0"/>
                             <button name="product" value="{{ product.sears_id }}">Add</button>
                         </form>
@@ -40,9 +40,9 @@
                 <tr>
             {% endfor %}
             <tr>
-                <form action="{% url 'userservice:flush_cart' %}" method="post">
+                <form class='flush_form' action="{% url 'userservice:flush_cart' %}" method="post">
                     {%csrf_token%}
-                    <button name="reverse" value='products:cart'>Clear cart</button>
+                    <button name="reverse" value='userservice:cart'>Clear cart</button>
                 </form>
             </tr>
         </table>
@@ -51,3 +51,9 @@
     {% endif %}
         
 {% endblock main %}
+
+
+{% block scripts %}
+    <script src="{% static 'userservice/change_cart_amount.js' %}"></script>
+    <script src="{% static 'userservice/flush_cart.js' %}"></script>
+{% endblock scripts %}

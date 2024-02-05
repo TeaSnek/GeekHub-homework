@@ -1,3 +1,4 @@
+from django.http import QueryDict
 from rest_framework import status
 from rest_framework.authentication import (
     SessionAuthentication,
@@ -41,7 +42,8 @@ class CartListView(APIView):
         if not cart:
             request.session['cart'] = {}
         data = request.data
-
+        if isinstance(data, QueryDict):
+            data = data.dict()
         try:
             action = data.pop('action')
         except KeyError:
@@ -56,9 +58,9 @@ class CartListView(APIView):
                             status=status.HTTP_400_BAD_REQUEST
                         )
                     if cart.get(key, 0):
-                        request.session['cart'][key] += value
+                        request.session['cart'][key] += int(value)
                     else:
-                        request.session['cart'][key] = value
+                        request.session['cart'][key] = int(value)
             case 'flush':
                 if cart:
                     request.session['cart'].clear()
@@ -73,14 +75,14 @@ class CartListView(APIView):
                             {'message': f'unknown product: {key}'},
                             status=status.HTTP_400_BAD_REQUEST
                         )
-                    if value > 0:
+                    if int(value) > 0:
                         if cart.get(key, 0):
-                            request.session['cart'][key] += value
+                            request.session['cart'][key] += int(value)
                         else:
-                            request.session['cart'][key] = value
-                    elif value < 0:
-                        if cart.get(key, 0) + value > 0:
-                            request.session['cart'][key] += value
+                            request.session['cart'][key] = int(value)
+                    elif int(value) < 0:
+                        if cart.get(key, 0) + int(value) > 0:
+                            request.session['cart'][key] += int(value)
                         elif cart.get(key, 0):
                             del request.session['cart'][key]
                         else:
@@ -88,6 +90,9 @@ class CartListView(APIView):
             case _:
                 return Response({'message': f'unknown action: {action}'},
                                 status=status.HTTP_400_BAD_REQUEST)
+        for key, value in self.request.session['cart'].items():
+            if value <= 0:
+                self.request.session['cart'].pop(key)
         request.session.modified = True
         return Response(
             {'message': 'cart updated'},
