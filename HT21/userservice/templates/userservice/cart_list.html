@@ -14,7 +14,7 @@
                 <th>Quantity</th>
             </tr>
             {% for product, quantity in cart_list.items %}
-                <tr>
+                <tr class="{{ product.sears_id }}_row">
                     <td>
                         <a href="{% url 'products:product_detail' product.sears_id %}">
                             {{product}}
@@ -37,13 +37,15 @@
                             <button name="product" value="{{ product.sears_id }}">Add</button>
                         </form>
                     </td>
-                <tr>
+                </tr>
             {% endfor %}
             <tr>
-                <form class='flush_form' action="{% url 'userservice:flush_cart' %}" method="post">
-                    {%csrf_token%}
-                    <button name="reverse" value='userservice:cart'>Clear cart</button>
-                </form>
+                <td>
+                    <form class='flush_form' action="{% url 'userservice:flush_cart' %}" method="post">
+                        {%csrf_token%}
+                        <button name="reverse" value='userservice:cart'>Clear cart</button>
+                    </form>
+                </td>
             </tr>
         </table>
     {% else %}

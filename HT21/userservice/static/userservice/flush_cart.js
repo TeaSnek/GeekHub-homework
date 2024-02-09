@@ -17,8 +17,15 @@ $(document).ready(function () {
                 console.error('Error:', response)
             },
         }).done(function(){
-            location.reload();
+            replceTable();
         });
         event.preventDefault();
     });
 });
+
+function replceTable() {
+    let table = $("table")[0];
+    emptyCartHeader = document.createElement("h3");
+    emptyCartHeader.innerText = "Cart is Empty"
+    table.replaceWith(emptyCartHeader);
+}

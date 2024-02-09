@@ -41,14 +41,15 @@ class CartListView(APIView):
         cart = request.session.get('cart', {})
         if not cart:
             request.session['cart'] = {}
-        data = request.data
-        if isinstance(data, QueryDict):
-            data = data.dict()
+        data = request.data.dict() if isinstance(request.data, QueryDict)\
+            else request.data
+
         try:
             action = data.pop('action')
         except KeyError:
             return Response({'message': '"action" argument is missing'},
                             status=status.HTTP_400_BAD_REQUEST)
+
         match action:
             case 'add':
                 for key, value in data.items():
@@ -94,8 +95,18 @@ class CartListView(APIView):
             if value <= 0:
                 self.request.session['cart'].pop(key)
         request.session.modified = True
+
+        new_amounts = [
+            {
+                'product': key,
+                'amount': request.session.get('cart', {}).get(key, 0)
+            } for key in data.keys()
+        ]
         return Response(
-            {'message': 'cart updated'},
+            data={
+                    'message': 'cart updated',
+                    'new_amounts': new_amounts
+                },
             status=status.HTTP_202_ACCEPTED)
 
     def options(self, request, *args, **kwargs):
