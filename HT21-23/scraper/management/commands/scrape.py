@@ -4,7 +4,7 @@ from django.core.management.base import (
     CommandError,
 )
 
-from scraper.scraper import scrape_prod as scrape
+from scraper.tasks import scrape_prod as scrape
 
 
 class Command(BaseCommand):

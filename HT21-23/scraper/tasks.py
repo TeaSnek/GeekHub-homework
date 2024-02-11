@@ -8,11 +8,12 @@
 Наприклад, категорія https://www.sears.com/tools-tool-storage/b-1025184 має ІД
 1025184
 """
-
+from __future__ import absolute_import, unicode_literals
 
 from random import randint
 from time import sleep
 
+from celery import shared_task
 import requests
 
 from products.models import (
@@ -71,6 +72,7 @@ def excract_category(categories):
     return result
 
 
+@shared_task
 def save_product_v2(product_data):
     """
     Creates or updates record in db
@@ -100,6 +102,7 @@ def save_product_v2(product_data):
 
 def scrape_prod(products_list):
     i = 0
+
     while i < len(products_list):
         product = products_list[i].upper()
         response = requests.get(SEARCH_PROD_API + product, params={
@@ -108,7 +111,7 @@ def scrape_prod(products_list):
 
         if response.status_code == 200:
             data = response.json()
-            save_product_v2(data)
+            save_product_v2.delay(data)
             i += 1
 
         elif response.status_code == 404:

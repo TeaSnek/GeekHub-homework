@@ -22,6 +22,7 @@ from django.urls import reverse
 
 from . import models
 from . import utils
+from scraper.tasks import scrape_prod
 
 
 class LandingTemplateView(TemplateView):
@@ -72,13 +73,7 @@ class AddProductsFormView(utils.SuperUserRequiredMixin, FormView):
 
     def form_valid(self, form: Any) -> HttpResponse:
         categories = form.cleaned_data['product_categories']
-        curr_exec = sys.executable
-        sp.Popen([
-            curr_exec,
-            'manage.py',
-            'scrape',
-            categories
-        ])
+        scrape_prod(categories.split())
         return super(AddProductsFormView, self).form_valid(form)
 
 
