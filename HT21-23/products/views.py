@@ -73,7 +73,7 @@ class AddProductsFormView(utils.SuperUserRequiredMixin, FormView):
 
     def form_valid(self, form: Any) -> HttpResponse:
         categories = form.cleaned_data['product_categories']
-        scrape_prod(categories.split())
+        scrape_prod.delay(categories.split())
         return super(AddProductsFormView, self).form_valid(form)
 
 

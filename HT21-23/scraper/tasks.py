@@ -100,6 +100,7 @@ def save_product_v2(product_data):
     return created
 
 
+@shared_task
 def scrape_prod(products_list):
     i = 0
 
