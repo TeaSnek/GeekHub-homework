@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'products',
     # 'scraper',
     'userservice',
-    'celery',
 ]
 
 MIDDLEWARE = [

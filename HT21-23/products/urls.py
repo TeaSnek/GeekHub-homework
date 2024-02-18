@@ -12,7 +12,8 @@ app_name = 'products'
 
 router = routers.DefaultRouter()
 
-router.register(r'api/product', api_views.ProductReadOnlyModelViewSet)
+router.register(r'api/product', api_views.ProductReadOnlyModelViewSet,
+                basename='productROAPI')
 router.register(r'api/admin/product', api_views.ProductViewSet)
 router.register(r'api/category', api_views.CategoryReadOnlyModelViewSet)
 router.register(r'api/admin/category', api_views.CategoryViewSet)
