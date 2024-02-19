@@ -40,7 +40,7 @@ class ProductViewSet(mixins.RetrieveModelMixin,
                              in models.Product._meta.get_fields()]
         params = {key: value for key, value in self.request.data.items()
                   if key in model_fields_name}
-        if not params:
+        if not params or self.request.method != 'get':
             return models.Product.objects.all()
         return models.Product.objects.filter(**params)
 
@@ -75,6 +75,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
                              in models.Category._meta.get_fields()]
         params = {key: value for key, value in self.request.data.items()
                   if key in model_fields_name}
-        if not params:
+        if not params or self.request.method != 'get':
             return models.Category.objects.all()
         return models.Category.objects.filter(**params)

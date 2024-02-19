@@ -107,7 +107,7 @@ class CartListView(APIView):
                     'message': 'cart updated',
                     'new_amounts': new_amounts
                 },
-            status=status.HTTP_202_ACCEPTED)
+            status=status.HTTP_200_OK)
 
     def options(self, request, *args, **kwargs):
         return Response({

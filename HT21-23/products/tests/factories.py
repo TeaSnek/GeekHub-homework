@@ -29,7 +29,9 @@ class ProductFactory(factory.django.DjangoModelFactory):
     )
     short_about = factory.Faker('paragraph')
     brand = factory.Faker('company')
-    sears_link = factory.LazyAttribute(lambda obj: f'https://www.sears.com/{obj.product_name.replace(" ", "-")}/p-{obj.sears_id.lower()}')
+    sears_link = factory.LazyAttribute(lambda obj:
+                                       f'https://www.sears.com/{obj.product_name.replace(" ", "-")}'
+                                       f'/p-{obj.sears_id.lower()}')
 
     @factory.post_generation
     def category(self, create, extracted, **kwargs):

@@ -9,8 +9,6 @@ from . import api_views
 from . import views
 # Create your views here.
 
-app_name = 'products'
-
 router = routers.DefaultRouter()
 
 app_name = 'userservice'

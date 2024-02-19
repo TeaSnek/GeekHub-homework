@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     # mine
     'my_products',
     'products',
-    # 'scraper',
     'userservice',
 ]
 
