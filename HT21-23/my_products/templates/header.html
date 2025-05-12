@@ -1,11 +1,59 @@
-<a href='/products'>PRODUCTS</a>
-{% if request.user.is_authenticated %}
-    <a href='{% url "userservice:cart" %}'>CART</a>
-    {% if request.user.is_superuser %}
-        <a href='/add_products'>SCRAPE</a>
-    {% endif %}
-    USER: {{request.user.username.upper}}
-    <a href="{% url 'userservice:logout' %}">LOGOUT</a>
-{% else %}
-    <a href="{% url 'userservice:login' %}">LOG IN</a>
-{% endif %}
+<style>
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        padding: 0.8rem 1.5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar .nav-links,
+    .navbar .nav-user {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .navbar a:hover {
+        color: #007BFF;
+    }
+
+    .nav-user .username {
+        font-weight: bold;
+        color: #555;
+        text-transform: uppercase;
+    }
+</style>
+
+<header class="navbar">
+    <div class="nav-links">
+        <a href="/products">PRODUCTS</a>
+
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'userservice:cart' %}">CART</a>
+
+            {% if request.user.is_superuser %}
+                <a href="/add_products">SCRAPE</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="nav-user">
+        {% if request.user.is_authenticated %}
+            <span class="username">USER: {{ request.user.username|upper }}</span>
+            <a href="{% url 'userservice:logout' %}">LOGOUT</a>
+        {% else %}
+            <a href="{% url 'userservice:login' %}">LOG IN</a>
+            <a href="{% url 'userservice:signup' %}">SIGN UP</a>
+        {% endif %}
+    </div>
+</header>

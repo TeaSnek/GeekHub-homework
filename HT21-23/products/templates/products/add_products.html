@@ -5,10 +5,74 @@
 {% endblock title %}
 
 {% block main %}
-<h1>Scrape new products</h1>
-<form action = "" method = "post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Submit">
-</form>
+<style>
+    .form-container {
+        max-width: 300px;
+        margin: 2rem auto;
+        padding: 2rem 2.5rem;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    input[type="submit"] {
+        padding: 0.7rem;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    .form-errors {
+        color: #d9534f;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Scrape New Products</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="form-errors">
+                Please fix the errors below.
+            </div>
+        {% endif %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
 {% endblock main %}

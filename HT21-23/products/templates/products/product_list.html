@@ -1,47 +1,139 @@
 {% extends "base.html" %}
 {% load static %}
-<script type="text/javascript" src="{% static 'cartutils.js' %}"></script>
+
 {% block title %}
 - {{ current }} Products
 {% endblock title %}
 
 {% block subheader %}
+<style>
+    .category-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin: 1rem 0;
+        padding: 0 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .category-nav a {
+        padding: 0.4rem 0.75rem;
+        background-color: #e0e0e0;
+        color: #333;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .category-nav a:hover {
+        background-color: #c8c8c8;
+    }
+</style>
+
+<div class="category-nav">
     {% for category in categories %}
         {% if category.products.exists %}
-            <a href="{% url 'products:category_list' category %}">
-                {{category}}    
-            </a>
+            <a href="{% url 'products:category_list' category %}">{{ category }}</a>
         {% endif %}
     {% endfor %}
+</div>
 {% endblock subheader %}
 
 {% block main %}
+<style>
+    .product-table-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    legend h1 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table th, table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #f5f5f5;
+        color: #444;
+    }
+
+    table td a {
+        color: #2196F3;
+        text-decoration: none;
+    }
+
+    table td a:hover {
+        text-decoration: underline;
+    }
+
+    .add_to_cart_btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .add_to_cart_btn:hover {
+        background-color: #45a049;
+    }
+</style>
+
+<div class="product-table-container">
     {% if products_list %}
-        <legend><h1>{{ current }} products</h1></legend>
+        <legend><h1>{{ current }} Products</h1></legend>
         <table>
-        {% csrf_token %}
+            {% csrf_token %}
             <tr>
                 <th>Name</th>
                 <th>Cost</th>
+                {% if request.user.is_authenticated %}
+                    <th></th>
+                {% endif %}
             </tr>
             {% for product in products_list %}
                 <tr>
                     <td>
                         <a href="{% url 'products:product_detail' product.sears_id %}">
-                            {{ product.product_name}}
+                            {{ product.product_name }}
                         </a>
                     </td>
-                    <td>{{ product.price}}$</td>
+                    <td>{{ product.price }}$</td>
+                    {% if request.user.is_authenticated %}
                     <td>
                         <button class="add_to_cart_btn" data-searsid="{{ product.sears_id }}">
                             Add to Cart
                         </button>
                     </td>
-                <tr>
+                    {% endif %}
+                </tr>
             {% endfor %}
+        </table>
     {% else %}
-        Category does not exists or empty
+        <p>Category does not exist or is empty.</p>
     {% endif %}
+</div>
 {% endblock main %}
 
 {% block scripts %}

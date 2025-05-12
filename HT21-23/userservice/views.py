@@ -6,8 +6,30 @@ from django.contrib.auth.views import LoginView
 from django.views.generic import ListView
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
+from django.shortcuts import resolve_url
+from django.views.generic.edit import FormView
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.views import View
+from django.contrib.auth.forms import UserCreationForm
+
 
 from products import models
+
+
+class SignupView(View):
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, 'userservice/signup.html', {'form': form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Auto login
+            return redirect('products:landing')  # Redirect to main page
+        return render(request, 'userservice/signup.html', {'form': form})
 
 
 class LoginFormView(LoginView):

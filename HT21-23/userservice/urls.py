@@ -15,7 +15,7 @@ app_name = 'userservice'
 
 urlpatterns = [
     # public
-
+    path('signup', views.SignupView.as_view(), name='signup'),
     # registered users
     path('cart', views.CartListView.as_view(),
          name='cart'),

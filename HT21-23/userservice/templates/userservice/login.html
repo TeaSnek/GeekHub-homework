@@ -1,35 +1,102 @@
 {% extends "base.html" %}
+{% block title %}
+- Login
+{% endblock title %}
 
 {% block main %}
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+    .auth-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .auth-form label {
+        font-weight: bold;
+        color: #444;
+    }
+
+    .auth-form input[type="text"],
+    .auth-form input[type="password"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .auth-form input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.6rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .auth-form input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    .error-message {
+        background-color: #ffe6e6;
+        color: #b71c1c;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #f44336;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="auth-container">
+    <h2>Login</h2>
+
+    {% if form.errors %}
+        <div class="error-message">
+            Your username and password didn't match. Please try again.
+        </div>
     {% endif %}
-{% endif %}
 
-<form method="post" action="{% url 'userservice:login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    {% if next %}
+        {% if user.is_authenticated %}
+            <div class="error-message">
+                Your account doesn't have access to this page. To proceed, login with an account that has access.
+            </div>
+        {% else %}
+            <div class="error-message">
+                Please login to see this page.
+            </div>
+        {% endif %}
+    {% endif %}
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    <form method="post" action="{% url 'userservice:login' %}" class="auth-form">
+        {% csrf_token %}
+        {{ form.username.label_tag }}
+        {{ form.username }}
 
+        {{ form.password.label_tag }}
+        {{ form.password }}
+
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="submit" value="Login">
+    </form>
+</div>
 {% endblock %}
