@@ -104,6 +104,7 @@ class EditProductFormView(utils.SuperUserRequiredMixin, FormView):
             initial['brand'] = product.brand
             initial['category'] = product.category.all()
             initial['sears_link'] = product.sears_link
+            initial['image'] = product.image
         return initial
 
     def form_valid(self, form: Any) -> HttpResponse:

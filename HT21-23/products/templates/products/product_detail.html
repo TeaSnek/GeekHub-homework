@@ -120,6 +120,16 @@
     .buy-section button:hover {
         background-color: #45a049;
     }
+
+    .image {
+        flex: auto;
+        align-items: center;
+        text-align: center;    
+    }
+
+    .small-icon {
+        max-height: 20rem;
+    }
 </style>
 
 <div class="product-container">
@@ -138,8 +148,15 @@
             </div>
         {% endif %}
     </div>
-
+    <div class='image'>
+    {% if product_details.image %}
+        <img class='small-icon' src="{{ product_details.image.url }}" alt="{{ product_details.title }}">
+    {% else %}
+        <img src="/static/images/default_product.png" alt="No image">
+    {% endif %}
+    </div>
     <table>
+    
         <tr>
             <th>Product name</th>
             <td>{{ product_details.product_name }}</td>

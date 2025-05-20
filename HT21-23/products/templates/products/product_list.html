@@ -98,6 +98,10 @@
     .add_to_cart_btn:hover {
         background-color: #45a049;
     }
+
+    .small-icon {
+        max-height: 5rem
+    }
 </style>
 
 <div class="product-table-container">
@@ -114,6 +118,13 @@
             </tr>
             {% for product in products_list %}
                 <tr>
+                    <td>
+                        {% if product.image %}
+                            <img class='small-icon' src="{{ product.image.url }}" alt="{{ product.title }}">
+                        {% else %}
+                            <img src="/static/images/default_product.png" alt="No image">
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{% url 'products:product_detail' product.sears_id %}">
                             {{ product.product_name }}

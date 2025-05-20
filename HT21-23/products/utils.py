@@ -30,8 +30,10 @@ class EditProductForm(forms.ModelForm):
     class Meta:
         model = models.Product
         required_fields = ['product_name', 'price']
-        fields = ['product_name', 'price', 'short_about',
-                  'brand', 'sears_link', 'category']
+        fields = [
+            'product_name', 'price', 'short_about',
+            'brand', 'sears_link', 'category', 'image'
+        ]
 
     category = forms.ModelMultipleChoiceField(
         queryset=models.Category.objects.all(),

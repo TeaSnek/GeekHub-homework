@@ -20,6 +20,7 @@ class Product(models.Model):
         related_name='products',
     )
     sears_link = models.URLField()
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
 
     def __str__(self) -> str:
         return self.product_name
